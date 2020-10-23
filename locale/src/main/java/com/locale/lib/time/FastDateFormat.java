@@ -1,4 +1,4 @@
-package com.locale.lib;
+package com.locale.lib.time;
 
 import java.text.DateFormat;
 import java.text.FieldPosition;

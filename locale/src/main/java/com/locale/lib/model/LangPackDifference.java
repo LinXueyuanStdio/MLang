@@ -1,4 +1,4 @@
-package com.locale.lib;
+package com.locale.lib.model;
 
 import java.util.ArrayList;
 

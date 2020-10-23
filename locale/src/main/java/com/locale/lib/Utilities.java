@@ -1,5 +1,9 @@
 package com.locale.lib;
 
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.os.Handler;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,6 +21,13 @@ import java.util.regex.Pattern;
  * @usage null
  */
 public class Utilities {
+
+    public static int distanceSystemType = 0;
+    public static boolean USE_CLOUD_STRINGS = false;
+
+    public static long getTimeFromServer() {
+        return System.currentTimeMillis();
+    }
     public static Pattern pattern = Pattern.compile("[\\-0-9]+");
 
     public static Integer parseInt(CharSequence value) {
@@ -30,12 +41,9 @@ public class Utilities {
                 String num = matcher.group(0);
                 val = Integer.parseInt(num);
             }
-        } catch (Exception ignore) {
-
-        }
+        } catch (Exception ignore) {}
         return val;
     }
-
 
     public static void runOnUIThread(Runnable runnable) {
         runOnUIThread(runnable, 0);
@@ -43,14 +51,14 @@ public class Utilities {
 
     public static void runOnUIThread(Runnable runnable, long delay) {
         if (delay == 0) {
-            ApplicationLoader.applicationHandler.post(runnable);
+            applicationHandler.post(runnable);
         } else {
-            ApplicationLoader.applicationHandler.postDelayed(runnable, delay);
+            applicationHandler.postDelayed(runnable, delay);
         }
     }
 
     public static void cancelRunOnUIThread(Runnable runnable) {
-        ApplicationLoader.applicationHandler.removeCallbacks(runnable);
+        applicationHandler.removeCallbacks(runnable);
     }
 
     public static boolean copyFile(InputStream sourceFile, File destFile) throws IOException {
@@ -80,4 +88,30 @@ public class Utilities {
         }
         return true;
     }
+
+    public static Context applicationContext;
+    public static volatile Handler applicationHandler;
+
+    public static File getFilesDirFixed() {
+        return getFilesDirFixed(applicationContext);
+    }
+
+    public static File getFilesDirFixed(Context context) {
+        for (int a = 0; a < 10; a++) {
+            File path = context.getFilesDir();
+            if (path != null) {
+                return path;
+            }
+        }
+        try {
+            ApplicationInfo info = context.getApplicationInfo();
+            File path = new File(info.dataDir, "files");
+            path.mkdirs();
+            return path;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new File("/data/data/com.demo.chat.messager/files");
+    }
+
 }

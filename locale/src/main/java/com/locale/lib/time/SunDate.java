@@ -6,7 +6,7 @@
  * Copyright Nikolai Kudashov, 2013-2018.
  */
 
-package com.locale.lib;
+package com.locale.lib.time;
 
 import java.util.Calendar;
 import java.util.TimeZone;
