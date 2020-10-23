@@ -32,6 +32,8 @@ public interface LangAction {
      */
     @Nullable
     String loadLanguageKey();
+
+    void runOnUIThread(Runnable runnable);
     void langpack_getDifference(String lang_pack, String lang_code, int from_version, @NonNull GetDifferenceCallback callback);
 
     void langpack_getLanguages(@NonNull GetLanguagesCallback callback);

@@ -569,10 +569,9 @@ public class MLang {
     /**
      * 解析翻译文件并应用
      * @param file 语言文件
-     * @param currentAccount 当前用户
      * @return 是否应用成功
      */
-    public boolean applyLanguageFile(File file, int currentAccount) {
+    public boolean applyLanguageFile(File file) {
         try {
             HashMap<String, String> stringMap = getLocaleFileStrings(file);
 
@@ -666,7 +665,7 @@ public class MLang {
             }
         }
         editor.putString("unofficial", stringBuilder.toString());
-        editor.commit();
+        editor.apply();
     }
 
     public boolean deleteLanguage(LocaleInfo localeInfo) {

@@ -92,6 +92,8 @@ public class Utilities {
     public static Context applicationContext;
     public static volatile Handler applicationHandler;
 
+    
+
     public static File getFilesDirFixed() {
         return getFilesDirFixed(applicationContext);
     }
