@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorGray">
+
+
+    <Button
+        android:id="@+id/btn_login_in_test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="去登录界面"/>
+
+    <Button
+        android:id="@+id/btn_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="去测试界面,真实的Activity"
+        android:layout_below="@+id/btn_login_in_test"/>
+
+
+</RelativeLayout>
