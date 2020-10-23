@@ -1676,15 +1676,16 @@ public class MLang {
                 LangPackString string = difference.strings.get(a);
                 if (string instanceof LangPackString) {
                     values.put(string.key, escapeString(string.value));
-                } else if (string instanceof TLRPC.TL_langPackStringPluralized) {
-                    values.put(string.key + "_zero", string.zero_value != null ? escapeString(string.zero_value) : "");
-                    values.put(string.key + "_one", string.one_value != null ? escapeString(string.one_value) : "");
-                    values.put(string.key + "_two", string.two_value != null ? escapeString(string.two_value) : "");
-                    values.put(string.key + "_few", string.few_value != null ? escapeString(string.few_value) : "");
-                    values.put(string.key + "_many", string.many_value != null ? escapeString(string.many_value) : "");
-                    values.put(string.key + "_other", string.other_value != null ? escapeString(string.other_value) : "");
-                } else if (string instanceof TLRPC.TL_langPackStringDeleted) {
-                    values.remove(string.key);
+                    //TODO
+                    //                } else if (string instanceof TLRPC.TL_langPackStringPluralized) {
+                    //                    values.put(string.key + "_zero", string.zero_value != null ? escapeString(string.zero_value) : "");
+                    //                    values.put(string.key + "_one", string.one_value != null ? escapeString(string.one_value) : "");
+                    //                    values.put(string.key + "_two", string.two_value != null ? escapeString(string.two_value) : "");
+                    //                    values.put(string.key + "_few", string.few_value != null ? escapeString(string.few_value) : "");
+                    //                    values.put(string.key + "_many", string.many_value != null ? escapeString(string.many_value) : "");
+                    //                    values.put(string.key + "_other", string.other_value != null ? escapeString(string.other_value) : "");
+                    //                } else if (string instanceof TLRPC.TL_langPackStringDeleted) {
+                    //                    values.remove(string.key);
                 }
             }
             BufferedWriter writer = new BufferedWriter(new FileWriter(finalFile));
@@ -1759,7 +1760,7 @@ public class MLang {
                     changingConfiguration = false;
                 }
                 recreateFormatters();
-                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+//                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);TODO ?
             });
         } catch (Exception ignore) {
 
@@ -1823,7 +1824,7 @@ public class MLang {
                     a--;
                 }
                 saveOtherLanguages();
-                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.suggestedLangpack);
+//                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.suggestedLangpack);TODO ?
                 applyLanguage(currentLocaleInfo, true, false);
             }));
         }
