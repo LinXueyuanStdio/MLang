@@ -1,6 +1,12 @@
 package com.locale.lib;
 
+import com.locale.lib.model.LangPackDifference;
+import com.locale.lib.model.LangPackLanguage;
+
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * @author 林学渊
@@ -10,18 +16,37 @@ import java.util.List;
  * @usage null
  */
 public interface LangAction {
-    void langpack_getDifference(String lang_pack, String lang_code, int from_version, GetDifferenceCallback callback);
+    /**
+     * SharedPreferences preferences = Utilities.getGlobalMainSettings();
+     * SharedPreferences.Editor editor = preferences.edit();
+     * editor.putString("language", language);
+     * editor.commit();
+     * @param language localeInfo.getKey()
+     */
+    void saveLanguageKey(String language);
 
-    void langpack_getLanguages(GetLanguagesCallback callback);
-    void langpack_getLangPack(String lang_code, GetLangPackCallback callback);
+    /**
+     * SharedPreferences preferences = Utilities.getGlobalMainSettings();
+     * String lang = preferences.getString("language", null);
+     * @return lang
+     */
+    @Nullable
+    String loadLanguageKey();
+    void langpack_getDifference(String lang_pack, String lang_code, int from_version, @NonNull GetDifferenceCallback callback);
 
-    public interface GetLanguagesCallback {
+    void langpack_getLanguages(@NonNull GetLanguagesCallback callback);
+
+    void langpack_getLangPack(String lang_code, @NonNull GetLangPackCallback callback);
+
+    interface GetLanguagesCallback {
         void onLoad(List<LangPackLanguage> languageList);
     }
-    public interface GetDifferenceCallback {
+
+    interface GetDifferenceCallback {
         void onLoad(LangPackDifference languageList);
     }
-    public interface GetLangPackCallback {
+
+    interface GetLangPackCallback {
         void onLoad(LangPackDifference languageList);
     }
 

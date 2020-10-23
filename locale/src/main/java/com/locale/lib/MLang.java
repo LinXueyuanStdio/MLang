@@ -12,6 +12,11 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Xml;
 
+import com.locale.lib.model.LangPackDifference;
+import com.locale.lib.model.LangPackLanguage;
+import com.locale.lib.model.LangPackString;
+import com.locale.lib.time.FastDateFormat;
+
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.BufferedWriter;
@@ -103,7 +108,7 @@ public class MLang {
     private class TimeZoneChangedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ApplicationLoader.applicationHandler.post(() -> {
+            Utilities.runOnUIThread(() -> {
                 if (!formatterDayMonth.getTimeZone().equals(TimeZone.getDefault())) {
                     MLang.getInstance().recreateFormatters();
                 }
@@ -171,16 +176,16 @@ public class MLang {
 
         public File getPathToFile() {
             if (isRemote()) {
-                return new File(ApplicationLoader.getFilesDirFixed(), "remote_" + shortName + ".xml");
+                return new File(Utilities.getFilesDirFixed(), "remote_" + shortName + ".xml");
             } else if (isUnofficial()) {
-                return new File(ApplicationLoader.getFilesDirFixed(), "unofficial_" + shortName + ".xml");
+                return new File(Utilities.getFilesDirFixed(), "unofficial_" + shortName + ".xml");
             }
             return !TextUtils.isEmpty(pathToFile) ? new File(pathToFile) : null;
         }
 
         public File getPathToBaseFile() {
             if (isUnofficial()) {
-                return new File(ApplicationLoader.getFilesDirFixed(), "unofficial_base_" + shortName + ".xml");
+                return new File(Utilities.getFilesDirFixed(), "unofficial_base_" + shortName + ".xml");
             }
             return null;
         }
@@ -346,13 +351,15 @@ public class MLang {
         }
 
         systemDefaultLocale = Locale.getDefault();
-        is24HourFormat = DateFormat.is24HourFormat(ApplicationLoader.applicationContext);
+        is24HourFormat = DateFormat.is24HourFormat(Utilities.applicationContext);
         LocaleInfo currentInfo = null;
         boolean override = false;
 
         try {
-            SharedPreferences preferences = MainSetting.getGlobalMainSettings();
-            String lang = preferences.getString("language", null);
+            String lang = null;
+            if (action != null) {
+                lang = action.loadLanguageKey();
+            }
             if (lang != null) {
                 currentInfo = getLanguageFromDict(lang);
                 if (currentInfo != null) {
@@ -377,7 +384,7 @@ public class MLang {
 
         try {
             IntentFilter timezoneFilter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
-            ApplicationLoader.applicationContext.registerReceiver(new TimeZoneChangedReceiver(), timezoneFilter);
+            Utilities.applicationContext.registerReceiver(new TimeZoneChangedReceiver(), timezoneFilter);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -589,7 +596,7 @@ public class MLang {
                 }
 
                 //将当前需要应用的翻译文件复制到内部目录
-                File finalFile = new File(ApplicationLoader.getFilesDirFixed(), languageCode + ".xml");
+                File finalFile = new File(Utilities.getFilesDirFixed(), languageCode + ".xml");
                 if (!Utilities.copyFile(file, finalFile)) {
                     return false;
                 }
@@ -621,7 +628,7 @@ public class MLang {
     }
 
     private void saveOtherLanguages() {
-        SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("langconfig", Activity.MODE_PRIVATE);
+        SharedPreferences preferences = Utilities.applicationContext.getSharedPreferences("langconfig", Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         StringBuilder stringBuilder = new StringBuilder();
         for (int a = 0; a < otherLanguages.size(); a++) {
@@ -693,7 +700,7 @@ public class MLang {
     }
 
     private void loadOtherLanguages() {
-        SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("langconfig", Activity.MODE_PRIVATE);
+        SharedPreferences preferences = Utilities.applicationContext.getSharedPreferences("langconfig", Activity.MODE_PRIVATE);
         String locales = preferences.getString("locales", null);
         if (!TextUtils.isEmpty(locales)) {
             String[] localesArr = locales.split("&");
@@ -753,7 +760,7 @@ public class MLang {
             }
             HashMap<String, String> stringMap = new HashMap<>();
             XmlPullParser parser = Xml.newPullParser();
-            //Utilities.copyFile(file, new File(ApplicationLoader.applicationContext.getExternalFilesDir(null), "locale10.xml"));
+            //Utilities.copyFile(file, new File(Utilities.applicationContext.getExternalFilesDir(null), "locale10.xml"));
             stream = new FileInputStream(file);
             parser.setInput(stream, "UTF-8");
             int eventType = parser.getEventType();
@@ -867,11 +874,9 @@ public class MLang {
             }
             if (override) {
                 languageOverride = localeInfo.shortName;
-
-                SharedPreferences preferences = MainSetting.getGlobalMainSettings();
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("language", localeInfo.getKey());
-                editor.commit();
+                if (action != null) {
+                    action.saveLanguageKey(localeInfo.getKey());
+                }
             }
             if (pathToFile == null) {
                 localeValues.clear();
@@ -900,7 +905,7 @@ public class MLang {
             Locale.setDefault(currentLocale);
             android.content.res.Configuration config = new android.content.res.Configuration();
             config.locale = currentLocale;
-            ApplicationLoader.applicationContext.getResources().updateConfiguration(config, ApplicationLoader.applicationContext.getResources().getDisplayMetrics());
+            Utilities.applicationContext.getResources().updateConfiguration(config, Utilities.applicationContext.getResources().getDisplayMetrics());
             changingConfiguration = false;
             if (reloadLastFile) {
                 if (init) {
@@ -934,10 +939,10 @@ public class MLang {
      */
     private String getStringInternal(String key, int res) {
         //如果是云端的字符串，直接从 localeValues 拿，否则使用系统的 getString 拿
-        String value = MainSetting.USE_CLOUD_STRINGS ? localeValues.get(key) : null;
+        String value = Utilities.USE_CLOUD_STRINGS ? localeValues.get(key) : null;
         if (value == null) {
             try {
-                value = ApplicationLoader.applicationContext.getString(res);
+                value = Utilities.applicationContext.getString(res);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -951,9 +956,9 @@ public class MLang {
     public static String getServerString(String key) {
         String value = getInstance().localeValues.get(key);
         if (value == null) {
-            int resourceId = ApplicationLoader.applicationContext.getResources().getIdentifier(key, "string", ApplicationLoader.applicationContext.getPackageName());
+            int resourceId = Utilities.applicationContext.getResources().getIdentifier(key, "string", Utilities.applicationContext.getPackageName());
             if (resourceId != 0) {
-                value = ApplicationLoader.applicationContext.getString(resourceId);
+                value = Utilities.applicationContext.getString(resourceId);
             }
         }
         return value;
@@ -967,7 +972,7 @@ public class MLang {
         if (TextUtils.isEmpty(key)) {
             return "LOC_ERR:" + key;
         }
-        int resourceId = ApplicationLoader.applicationContext.getResources().getIdentifier(key, "string", ApplicationLoader.applicationContext.getPackageName());
+        int resourceId = Utilities.applicationContext.getResources().getIdentifier(key, "string", Utilities.applicationContext.getPackageName());
         if (resourceId != 0) {
             return getString(key, resourceId);
         }
@@ -980,7 +985,7 @@ public class MLang {
         }
         String param = getInstance().stringForQuantity(getInstance().currentPluralRules.quantityForNumber(plural));
         param = key + "_" + param;
-        int resourceId = ApplicationLoader.applicationContext.getResources().getIdentifier(param, "string", ApplicationLoader.applicationContext.getPackageName());
+        int resourceId = Utilities.applicationContext.getResources().getIdentifier(param, "string", Utilities.applicationContext.getPackageName());
         return getString(param, resourceId);
     }
 
@@ -990,7 +995,7 @@ public class MLang {
         }
         String param = getInstance().stringForQuantity(getInstance().currentPluralRules.quantityForNumber(plural));
         param = key + "_" + param;
-        int resourceId = ApplicationLoader.applicationContext.getResources().getIdentifier(param, "string", ApplicationLoader.applicationContext.getPackageName());
+        int resourceId = Utilities.applicationContext.getResources().getIdentifier(param, "string", Utilities.applicationContext.getPackageName());
         return formatString(param, resourceId, plural);
     }
 
@@ -1006,10 +1011,10 @@ public class MLang {
                 stringBuilder.insert(a, ',');
             }
 
-            String value = MainSetting.USE_CLOUD_STRINGS ? getInstance().localeValues.get(param) : null;
+            String value = Utilities.USE_CLOUD_STRINGS ? getInstance().localeValues.get(param) : null;
             if (value == null) {
-                int resourceId = ApplicationLoader.applicationContext.getResources().getIdentifier(param, "string", ApplicationLoader.applicationContext.getPackageName());
-                value = ApplicationLoader.applicationContext.getString(resourceId);
+                int resourceId = Utilities.applicationContext.getResources().getIdentifier(param, "string", Utilities.applicationContext.getPackageName());
+                value = Utilities.applicationContext.getString(resourceId);
             }
             value = value.replace("%1$d", "%1$s");
 
@@ -1026,9 +1031,9 @@ public class MLang {
 
     public static String formatString(String key, int res, Object... args) {
         try {
-            String value = MainSetting.USE_CLOUD_STRINGS ? getInstance().localeValues.get(key) : null;
+            String value = Utilities.USE_CLOUD_STRINGS ? getInstance().localeValues.get(key) : null;
             if (value == null) {
-                value = ApplicationLoader.applicationContext.getString(res);
+                value = Utilities.applicationContext.getString(res);
             }
 
             if (getInstance().currentLocale != null) {
@@ -1245,7 +1250,7 @@ public class MLang {
         if (changingConfiguration) {
             return;
         }
-        is24HourFormat = DateFormat.is24HourFormat(ApplicationLoader.applicationContext);
+        is24HourFormat = DateFormat.is24HourFormat(Utilities.applicationContext);
         systemDefaultLocale = newConfig.locale;
         if (languageOverride != null) {
             LocaleInfo toSet = currentLocaleInfo;
@@ -1390,7 +1395,7 @@ public class MLang {
             int dateYear = rightNow.get(Calendar.YEAR);
 
             if (dateDay == day && year == dateYear) {
-                int diff = (int) (MainSetting.getTimeFromServer() - date / 1000) / 60;
+                int diff = (int) (Utilities.getTimeFromServer() - date / 1000) / 60;
                 if (diff < 1) {
                     return MLang.getString("LocationUpdatedJustNow", R.string.LocationUpdatedJustNow);
                 } else if (diff < 60) {
@@ -1729,10 +1734,9 @@ public class MLang {
                         if (newLocale != null) {
                             languageOverride = localeInfo.shortName;
 
-                            SharedPreferences preferences = MainSetting.getGlobalMainSettings();
-                            SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString("language", localeInfo.getKey());
-                            editor.commit();
+                            if (action != null) {
+                                action.saveLanguageKey(localeInfo.getKey());
+                            }
                         }
                         if (newLocale != null) {
                             localeValues = valuesToSet;
@@ -1751,7 +1755,7 @@ public class MLang {
                             Locale.setDefault(currentLocale);
                             Configuration config = new Configuration();
                             config.locale = currentLocale;
-                            ApplicationLoader.applicationContext.getResources().updateConfiguration(config, ApplicationLoader.applicationContext.getResources().getDisplayMetrics());
+                            Utilities.applicationContext.getResources().updateConfiguration(config, Utilities.applicationContext.getResources().getDisplayMetrics());
                             changingConfiguration = false;
                         }
                     }
@@ -1760,7 +1764,7 @@ public class MLang {
                     changingConfiguration = false;
                 }
                 recreateFormatters();
-//                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);TODO ?
+                //                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);TODO ?
             });
         } catch (Exception ignore) {
 
@@ -1824,7 +1828,7 @@ public class MLang {
                     a--;
                 }
                 saveOtherLanguages();
-//                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.suggestedLangpack);TODO ?
+                //                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.suggestedLangpack);TODO ?
                 applyLanguage(currentLocaleInfo, true, false);
             }));
         }
@@ -2725,9 +2729,9 @@ public class MLang {
 
     public static String formatDistance(float distance) {
         if (useImperialSystemType == null) {
-            if (MainSetting.distanceSystemType == 0) {
+            if (Utilities.distanceSystemType == 0) {
                 try {
-                    TelephonyManager telephonyManager = (TelephonyManager) ApplicationLoader.applicationContext.getSystemService(Context.TELEPHONY_SERVICE);
+                    TelephonyManager telephonyManager = (TelephonyManager) Utilities.applicationContext.getSystemService(Context.TELEPHONY_SERVICE);
                     if (telephonyManager != null) {
                         String country = telephonyManager.getSimCountryIso().toUpperCase();
                         useImperialSystemType = "US".equals(country) || "GB".equals(country) || "MM".equals(country) || "LR".equals(country);
@@ -2737,7 +2741,7 @@ public class MLang {
                     e.printStackTrace();
                 }
             } else {
-                useImperialSystemType = MainSetting.distanceSystemType == 2;
+                useImperialSystemType = Utilities.distanceSystemType == 2;
             }
         }
         if (useImperialSystemType) {
