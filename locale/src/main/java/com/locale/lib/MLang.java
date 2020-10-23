@@ -307,7 +307,7 @@ public class MLang {
 
         loadOtherLanguages();
         if (remoteLanguages.isEmpty()) {
-            Utilities.runOnUIThread(() -> loadRemoteLanguages(UserConfig.selectedAccount));
+            Utilities.runOnUIThread(() -> loadRemoteLanguages());
         }
 
         for (int a = 0; a < otherLanguages.size(); a++) {
@@ -370,7 +370,7 @@ public class MLang {
                 }
             }
 
-            applyLanguage(currentInfo, override, true, UserConfig.selectedAccount);
+            applyLanguage(currentInfo, override, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -427,26 +427,26 @@ public class MLang {
         return currentLocaleInfo.isLocal();
     }
 
-    public void reloadCurrentRemoteLocale(int currentAccount, String langCode, boolean force) {
+    public void reloadCurrentRemoteLocale(String langCode, boolean force) {
         if (langCode != null) {
             langCode = langCode.replace("-", "_");
         }
         if (langCode == null || currentLocaleInfo != null && (langCode.equals(currentLocaleInfo.shortName) || langCode.equals(currentLocaleInfo.baseLangCode))) {
-            applyRemoteLanguage(currentLocaleInfo, langCode, force, currentAccount);
+            applyRemoteLanguage(currentLocaleInfo, langCode, force);
         }
     }
 
-    public void checkUpdateForCurrentRemoteLocale(int currentAccount, int version, int baseVersion) {
+    public void checkUpdateForCurrentRemoteLocale(int version, int baseVersion) {
         if (currentLocaleInfo == null || currentLocaleInfo != null && !currentLocaleInfo.isRemote() && !currentLocaleInfo.isUnofficial()) {
             return;
         }
         if (currentLocaleInfo.hasBaseLang()) {
             if (currentLocaleInfo.baseVersion < baseVersion) {
-                applyRemoteLanguage(currentLocaleInfo, currentLocaleInfo.baseLangCode, false, currentAccount);
+                applyRemoteLanguage(currentLocaleInfo, currentLocaleInfo.baseLangCode, false);
             }
         }
         if (currentLocaleInfo.version < version) {
-            applyRemoteLanguage(currentLocaleInfo, currentLocaleInfo.shortName, false, currentAccount);
+            applyRemoteLanguage(currentLocaleInfo, currentLocaleInfo.shortName, false);
         }
     }
 
@@ -611,7 +611,7 @@ public class MLang {
                     saveOtherLanguages();
                 }
                 localeValues = stringMap;
-                applyLanguage(localeInfo, true, false, true, false, currentAccount);
+                applyLanguage(localeInfo, true, false, true, false);
                 return true;
             }
         } catch (Exception e) {
@@ -662,7 +662,7 @@ public class MLang {
         editor.commit();
     }
 
-    public boolean deleteLanguage(LocaleInfo localeInfo, int currentAccount) {
+    public boolean deleteLanguage(LocaleInfo localeInfo) {
         if (localeInfo.pathToFile == null || localeInfo.isRemote() && localeInfo.serverIndex != Integer.MAX_VALUE) {
             return false;
         }
@@ -677,7 +677,7 @@ public class MLang {
             if (info == null) {
                 info = getLanguageFromDict("en");
             }
-            applyLanguage(info, true, false, currentAccount);
+            applyLanguage(info, true, false);
         }
 
         unofficialLanguages.remove(localeInfo);
@@ -814,11 +814,11 @@ public class MLang {
         return new HashMap<>();
     }
 
-    public void applyLanguage(LocaleInfo localeInfo, boolean override, boolean init, final int currentAccount) {
-        applyLanguage(localeInfo, override, init, false, false, currentAccount);
+    public void applyLanguage(LocaleInfo localeInfo, boolean override, boolean init) {
+        applyLanguage(localeInfo, override, init, false, false);
     }
 
-    public void applyLanguage(final LocaleInfo localeInfo, boolean override, boolean init, boolean fromFile, boolean force, final int currentAccount) {
+    public void applyLanguage(final LocaleInfo localeInfo, boolean override, boolean init, boolean fromFile, boolean force) {
         if (localeInfo == null) {
             return;
         }
@@ -845,9 +845,9 @@ public class MLang {
         }
         if ((localeInfo.isRemote() || localeInfo.isUnofficial()) && (force || !pathToFile.exists() || hasBase && !pathToBaseFile.exists())) {
             if (init) {
-                Utilities.runOnUIThread(() -> applyRemoteLanguage(localeInfo, null, true, currentAccount));
+                Utilities.runOnUIThread(() -> applyRemoteLanguage(localeInfo, null, true));
             } else {
-                applyRemoteLanguage(localeInfo, null, true, currentAccount);
+                applyRemoteLanguage(localeInfo, null, true);
             }
         }
         try {
@@ -904,9 +904,9 @@ public class MLang {
             changingConfiguration = false;
             if (reloadLastFile) {
                 if (init) {
-                    Utilities.runOnUIThread(() -> reloadCurrentRemoteLocale(currentAccount, null, force));
+                    Utilities.runOnUIThread(() -> reloadCurrentRemoteLocale(null, force));
                 } else {
-                    reloadCurrentRemoteLocale(currentAccount, null, force);
+                    reloadCurrentRemoteLocale(null, force);
                 }
                 reloadLastFile = false;
             }
@@ -1250,7 +1250,7 @@ public class MLang {
         if (languageOverride != null) {
             LocaleInfo toSet = currentLocaleInfo;
             currentLocaleInfo = null;
-            applyLanguage(toSet, false, false, UserConfig.selectedAccount);
+            applyLanguage(toSet, false, false);
         } else {
             Locale newLocale = newConfig.locale;
             if (newLocale != null) {
@@ -1632,7 +1632,7 @@ public class MLang {
         return str.replace("<", "&lt;").replace(">", "&gt;").replace("& ", "&amp; ");
     }
 
-    public void saveRemoteLocaleStringsForCurrentLocale(final LangPackDifference difference, int currentAccount) {
+    public void saveRemoteLocaleStringsForCurrentLocale(final LangPackDifference difference) {
         if (currentLocaleInfo == null) {
             return;
         }
@@ -1640,10 +1640,10 @@ public class MLang {
         if (!langCode.equals(currentLocaleInfo.shortName) && !langCode.equals(currentLocaleInfo.baseLangCode)) {
             return;
         }
-        saveRemoteLocaleStrings(currentLocaleInfo, difference, currentAccount);
+        saveRemoteLocaleStrings(currentLocaleInfo, difference);
     }
 
-    public void saveRemoteLocaleStrings(LocaleInfo localeInfo, final LangPackDifference difference, int currentAccount) {
+    public void saveRemoteLocaleStrings(LocaleInfo localeInfo, final LangPackDifference difference) {
         if (difference == null || difference.strings.isEmpty() || localeInfo == null || localeInfo.isLocal()) {
             return;
         }
@@ -1766,77 +1766,70 @@ public class MLang {
         }
     }
 
-    public void loadRemoteLanguages(final int currentAccount) {
+    public void loadRemoteLanguages() {
         if (loadingRemoteLanguages) {
             return;
         }
         loadingRemoteLanguages = true;
         if (action != null) {
-            action.langpack_getLanguages();
-        }
-        TLRPC.TL_langpack_getLanguages req = new TLRPC.TL_langpack_getLanguages();
-        ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> {
-            if (response != null) {
-                Utilities.runOnUIThread(() -> {
-                    loadingRemoteLanguages = false;
-                    TLRPC.Vector res = (TLRPC.Vector) response;
-                    for (int a = 0, size = remoteLanguages.size(); a < size; a++) {
-                        remoteLanguages.get(a).serverIndex = Integer.MAX_VALUE;
+            action.langpack_getLanguages((LangAction.GetLanguagesCallback) languageList -> Utilities.runOnUIThread(() -> {
+                loadingRemoteLanguages = false;
+                for (int a = 0, size = remoteLanguages.size(); a < size; a++) {
+                    remoteLanguages.get(a).serverIndex = Integer.MAX_VALUE;
+                }
+                for (int a = 0, size = languageList.size(); a < size; a++) {
+                    LangPackLanguage language = (LangPackLanguage) languageList.get(a);
+                    LocaleInfo localeInfo = new LocaleInfo();
+                    localeInfo.nameEnglish = language.name;
+                    localeInfo.name = language.native_name;
+                    localeInfo.shortName = language.lang_code.replace('-', '_').toLowerCase();
+                    if (language.base_lang_code != null) {
+                        localeInfo.baseLangCode = language.base_lang_code.replace('-', '_').toLowerCase();
+                    } else {
+                        localeInfo.baseLangCode = "";
                     }
-                    for (int a = 0, size = res.objects.size(); a < size; a++) {
-                        LangPackLanguage language = (LangPackLanguage) res.objects.get(a);
-                        LocaleInfo localeInfo = new LocaleInfo();
-                        localeInfo.nameEnglish = language.name;
-                        localeInfo.name = language.native_name;
-                        localeInfo.shortName = language.lang_code.replace('-', '_').toLowerCase();
-                        if (language.base_lang_code != null) {
-                            localeInfo.baseLangCode = language.base_lang_code.replace('-', '_').toLowerCase();
-                        } else {
-                            localeInfo.baseLangCode = "";
-                        }
-                        localeInfo.pluralLangCode = language.plural_code.replace('-', '_').toLowerCase();
-                        localeInfo.isRtl = language.rtl;
-                        localeInfo.pathToFile = "remote";
-                        localeInfo.serverIndex = a;
+                    localeInfo.pluralLangCode = language.plural_code.replace('-', '_').toLowerCase();
+                    localeInfo.isRtl = language.rtl;
+                    localeInfo.pathToFile = "remote";
+                    localeInfo.serverIndex = a;
 
-                        LocaleInfo existing = getLanguageFromDict(localeInfo.getKey());
-                        if (existing == null) {
-                            languages.add(localeInfo);
-                            languagesDict.put(localeInfo.getKey(), localeInfo);
-                        } else {
-                            existing.nameEnglish = localeInfo.nameEnglish;
-                            existing.name = localeInfo.name;
-                            existing.baseLangCode = localeInfo.baseLangCode;
-                            existing.pluralLangCode = localeInfo.pluralLangCode;
-                            existing.pathToFile = localeInfo.pathToFile;
-                            existing.serverIndex = localeInfo.serverIndex;
-                            localeInfo = existing;
-                        }
-                        if (!remoteLanguagesDict.containsKey(localeInfo.getKey())) {
-                            remoteLanguages.add(localeInfo);
-                            remoteLanguagesDict.put(localeInfo.getKey(), localeInfo);
-                        }
+                    LocaleInfo existing = getLanguageFromDict(localeInfo.getKey());
+                    if (existing == null) {
+                        languages.add(localeInfo);
+                        languagesDict.put(localeInfo.getKey(), localeInfo);
+                    } else {
+                        existing.nameEnglish = localeInfo.nameEnglish;
+                        existing.name = localeInfo.name;
+                        existing.baseLangCode = localeInfo.baseLangCode;
+                        existing.pluralLangCode = localeInfo.pluralLangCode;
+                        existing.pathToFile = localeInfo.pathToFile;
+                        existing.serverIndex = localeInfo.serverIndex;
+                        localeInfo = existing;
                     }
-                    for (int a = 0; a < remoteLanguages.size(); a++) {
-                        LocaleInfo info = remoteLanguages.get(a);
-                        if (info.serverIndex != Integer.MAX_VALUE || info == currentLocaleInfo) {
-                            continue;
-                        }
-                        remoteLanguages.remove(a);
-                        remoteLanguagesDict.remove(info.getKey());
-                        languages.remove(info);
-                        languagesDict.remove(info.getKey());
-                        a--;
+                    if (!remoteLanguagesDict.containsKey(localeInfo.getKey())) {
+                        remoteLanguages.add(localeInfo);
+                        remoteLanguagesDict.put(localeInfo.getKey(), localeInfo);
                     }
-                    saveOtherLanguages();
-                    NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.suggestedLangpack);
-                    applyLanguage(currentLocaleInfo, true, false, currentAccount);
-                });
-            }
-        }, ConnectionsManager.RequestFlagWithoutLogin);
+                }
+                for (int a = 0; a < remoteLanguages.size(); a++) {
+                    LocaleInfo info = remoteLanguages.get(a);
+                    if (info.serverIndex != Integer.MAX_VALUE || info == currentLocaleInfo) {
+                        continue;
+                    }
+                    remoteLanguages.remove(a);
+                    remoteLanguagesDict.remove(info.getKey());
+                    languages.remove(info);
+                    languagesDict.remove(info.getKey());
+                    a--;
+                }
+                saveOtherLanguages();
+                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.suggestedLangpack);
+                applyLanguage(currentLocaleInfo, true, false);
+            }));
+        }
     }
 
-    private void applyRemoteLanguage(LocaleInfo localeInfo, String langCode, boolean force, final int currentAccount) {
+    private void applyRemoteLanguage(LocaleInfo localeInfo, String langCode, boolean force) {
         if (localeInfo == null || localeInfo != null && !localeInfo.isRemote() && !localeInfo.isUnofficial()) {
             return;
         }
@@ -1844,57 +1837,44 @@ public class MLang {
             if (localeInfo.baseVersion != 0 && !force) {
                 if (localeInfo.hasBaseLang()) {
                     if (action != null) {
-                        action
+                        action.langpack_getDifference("", localeInfo.getLangCode(), localeInfo.version, new LangAction.GetDifferenceCallback() {
+                            @Override
+                            public void onLoad(LangPackDifference languageList) {
+                                Utilities.runOnUIThread(() -> saveRemoteLocaleStrings(localeInfo, languageList));
+                            }
+                        });
                     }
-                    //TODO 发起请求
-//                    TLRPC.TL_langpack_getDifference req = new TLRPC.TL_langpack_getDifference();
-//                    req.from_version = localeInfo.baseVersion;
-//                    req.lang_code = localeInfo.getBaseLangCode();
-//                    req.lang_pack = "";
-//                    ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> {
-//                        if (response != null) {
-//                            Utilities.runOnUIThread(() -> saveRemoteLocaleStrings(localeInfo, (LangPackDifference) response, currentAccount));
-//                        }
-//                    }, ConnectionsManager.RequestFlagWithoutLogin);
                 }
             } else {
-                //TODO 发起请求
-//                TLRPC.TL_langpack_getLangPack req = new TLRPC.TL_langpack_getLangPack();
-//                req.lang_code = localeInfo.getBaseLangCode();
-//                ConnectionsManager.getInstance(currentAccount).sendRequest(req, (TLObject response, TLRPC.TL_error error) -> {
-//                    if (response != null) {
-//                        Utilities.runOnUIThread(() -> saveRemoteLocaleStrings(localeInfo, (TLRPC.TL_langPackDifference) response, currentAccount));
-//                    }
-//                }, ConnectionsManager.RequestFlagWithoutLogin);
+                if (action != null) {
+                    action.langpack_getLangPack(localeInfo.getBaseLangCode(), new LangAction.GetLangPackCallback() {
+                        @Override
+                        public void onLoad(LangPackDifference languageList) {
+                            Utilities.runOnUIThread(() -> saveRemoteLocaleStrings(localeInfo, languageList));
+                        }
+                    });
+                }
             }
         }
         if (langCode == null || langCode.equals(localeInfo.shortName)) {
             if (localeInfo.version != 0 && !force) {
-                //TODO 发起请求
                 if (action != null) {
-
+                    action.langpack_getDifference("", localeInfo.getLangCode(), localeInfo.version, new LangAction.GetDifferenceCallback() {
+                        @Override
+                        public void onLoad(LangPackDifference languageList) {
+                            Utilities.runOnUIThread(() -> saveRemoteLocaleStrings(localeInfo, languageList));
+                        }
+                    });
                 }
-//                TLRPC.TL_langpack_getDifference req = new TLRPC.TL_langpack_getDifference();
-//                req.from_version = localeInfo.version;
-//                req.lang_code = localeInfo.getLangCode();
-//                req.lang_pack = "";
-//                ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> {
-//                    if (response != null) {
-//                        Utilities.runOnUIThread(() -> saveRemoteLocaleStrings(localeInfo, (TLRPC.TL_langPackDifference) response, currentAccount));
-//                    }
-//                }, ConnectionsManager.RequestFlagWithoutLogin);
             } else {
-                //TODO 发起请求
-//                for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) {
-//                    ConnectionsManager.setLangCode(localeInfo.getLangCode());
-//                }
-//                TLRPC.TL_langpack_getLangPack req = new TLRPC.TL_langpack_getLangPack();
-//                req.lang_code = localeInfo.getLangCode();
-//                ConnectionsManager.getInstance(currentAccount).sendRequest(req, (TLObject response, TLRPC.TL_error error) -> {
-//                    if (response != null) {
-//                        Utilities.runOnUIThread(() -> saveRemoteLocaleStrings(localeInfo, (TLRPC.TL_langPackDifference) response, currentAccount));
-//                    }
-//                }, ConnectionsManager.RequestFlagWithoutLogin);
+                if (action != null) {
+                    action.langpack_getLangPack(localeInfo.getLangCode(), new LangAction.GetLangPackCallback() {
+                        @Override
+                        public void onLoad(LangPackDifference languageList) {
+                            Utilities.runOnUIThread(() -> saveRemoteLocaleStrings(localeInfo, languageList));
+                        }
+                    });
+                }
             }
         }
     }
