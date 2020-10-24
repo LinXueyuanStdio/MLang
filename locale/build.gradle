@@ -30,7 +30,7 @@ dependencies {
 //////// 打包发布配置开始 ////////
 apply plugin: 'maven'
 ext {
-    DIST_PATH = "../dist"
+    DIST_PATH = ".."
     PUBLISH_GROUP_ID = 'com.timecat.component'
     PUBLISH_ARTIFACT_ID = 'MLang'
     PUBLISH_VERSION = "1.0.1"
