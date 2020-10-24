@@ -23,7 +23,7 @@ public interface LangAction {
      * editor.commit();
      * @param language localeInfo.getKey()
      */
-    void saveLanguageKey(String language);
+    void saveLanguageKeyInLocal(String language);
 
     /**
      * SharedPreferences preferences = Utilities.getGlobalMainSettings();
@@ -31,9 +31,8 @@ public interface LangAction {
      * @return lang
      */
     @Nullable
-    String loadLanguageKey();
+    String loadLanguageKeyInLocal();
 
-    void runOnUIThread(Runnable runnable);
     void langpack_getDifference(String lang_pack, String lang_code, int from_version, @NonNull GetDifferenceCallback callback);
 
     void langpack_getLanguages(@NonNull GetLanguagesCallback callback);
@@ -41,14 +40,26 @@ public interface LangAction {
     void langpack_getLangPack(String lang_code, @NonNull GetLangPackCallback callback);
 
     interface GetLanguagesCallback {
+        /**
+         * 必须在UI线程或者主线程调用
+         * @param languageList
+         */
         void onLoad(List<LangPackLanguage> languageList);
     }
 
     interface GetDifferenceCallback {
+        /**
+         * 必须在UI线程或者主线程调用
+         * @param languageList
+         */
         void onLoad(LangPackDifference languageList);
     }
 
     interface GetLangPackCallback {
+        /**
+         * 必须在UI线程或者主线程调用
+         * @param languageList
+         */
         void onLoad(LangPackDifference languageList);
     }
 
