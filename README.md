@@ -69,10 +69,10 @@ public class MyLang {
     }
     ...
 }
+```
 
 `AbsLangAction` 抽象类定义了必要的网络接口，注释和demo给出了详细的说明和实现，只需照抄即可。
 
-```
 ## 使用
 
 使用字符串
