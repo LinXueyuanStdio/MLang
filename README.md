@@ -1,12 +1,32 @@
-# MLang
+# MLang 动态化多语言框架
 
-多语言框架
+`MLang` 是 MultiLanguage 的简写，是一款动态化的多语言框架。
+
+- [x] 动态下发语言包
+- [x] 语言包的升级
+- [x] 跟随系统语言
+- [x] 详尽的中文注释
+- [x] 完善的 demo
 
 ## 安装
 
-引入
+1. 引入
 
-在 Application 中初始化，并监听系统语言的更改（如果跟随系统语言的话）：
+```java
+//build.gradle
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://raw.githubusercontent.com/LinXueyuanStdio/MLang/main/dist" }
+    }
+}
+
+//app/build.gradle
+implementation 'com.timecat.component:MLang:1.0.1'
+```
+
+2. 在 Application 中初始化，并监听系统语言的更改（如果跟随系统语言的话）：
 ```java
 public class MyApplication extends Application {
     @SuppressLint("StaticFieldLeak")
@@ -48,8 +68,11 @@ public class MyLang {
     }
     ...
 }
+
+`AbsLangAction` 抽象类定义了必要的网络接口，注释和demo给出了详细的说明和实现，只需照抄即可。
+
 ```
-2. 使用
+## 使用
 
 使用字符串
 ```java
