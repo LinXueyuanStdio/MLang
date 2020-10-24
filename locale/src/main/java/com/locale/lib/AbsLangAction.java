@@ -13,7 +13,7 @@ import java.io.File;
  */
 public abstract class AbsLangAction implements LangAction {
     /**
-     * 同步串行
+     * 同步串行调用
      * @return 时间（ms）
      */
     public abstract long getTimeFromServer();
