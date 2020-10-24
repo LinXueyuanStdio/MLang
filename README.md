@@ -84,7 +84,7 @@ MyLang.getString("remote_string_only", R.string.fallback_string)
 ```
 使用语言包
 ```java
-//应用一种语言
+//应用一种语言（这里自动处理了语言包的升级、语言包内部字符串的升级）
 MyLang.getInstance().applyLanguage(Context, MLang.LocaleInfo, force=true, init=false);
 //删除一种语言
 MyLang.getInstance().deleteLanguage(Context, MLang.LocaleInfo);
