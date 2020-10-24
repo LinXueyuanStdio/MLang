@@ -26,5 +26,10 @@
       <option name="name" value="maven" />
       <option name="url" value="https://raw.githubusercontent.com/LinXueyuanStdio/MLang/main/dist" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="https://raw.githubusercontent.com/LinXueyuanStdio/MLang/main" />
+    </remote-repository>
   </component>
 </project>
