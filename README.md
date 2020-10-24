@@ -19,7 +19,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url "https://raw.githubusercontent.com/LinXueyuanStdio/MLang/main/dist" }
+        maven { url "https://raw.githubusercontent.com/LinXueyuanStdio/MLang/main" }
     }
 }
 
