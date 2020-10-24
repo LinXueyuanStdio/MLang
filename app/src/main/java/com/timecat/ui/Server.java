@@ -19,13 +19,15 @@ import androidx.annotation.NonNull;
 public class Server {
     public static ArrayList<LangPackString> englishStrings() {
         ArrayList<LangPackString> list = new ArrayList<>();
-        list.add(new LangPackString("", ""));
+        list.add(new LangPackString("LanguageName", "English"));
+        list.add(new LangPackString("test", "test"));
         return list;
     }
 
     public static ArrayList<LangPackString> chineseStrings() {
         ArrayList<LangPackString> list = new ArrayList<>();
-        list.add(new LangPackString("", ""));
+        list.add(new LangPackString("LanguageName", "中文简体"));
+        list.add(new LangPackString("test", "测试"));
         return list;
     }
 
@@ -69,7 +71,7 @@ public class Server {
     }
 
     public static void request_langpack_getDifference(String lang_pack, String lang_code, int from_version, @NonNull final GetDifferenceCallback callback) {
-
+        callback.onNext(chinesePackDifference());
     }
 
     public static void request_langpack_getLanguages(@NonNull GetLanguagesCallback callback) {
@@ -77,7 +79,7 @@ public class Server {
     }
 
     public static void request_langpack_getLangPack(String lang_code, @NonNull GetLangPackCallback callback) {
-
+        callback.onNext(chinesePackDifference());
     }
 
     public interface GetDifferenceCallback {

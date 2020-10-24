@@ -840,10 +840,26 @@ public class MLang {
         return new HashMap<>();
     }
 
+    /**
+     * 应用语言
+     * @param context 上下文
+     * @param localeInfo 语言包信息
+     * @param override 覆盖当前语言设置，会调用 saveLanguageKeyInLocal
+     * @param init app 正在初始化
+     */
     public void applyLanguage(Context context, LocaleInfo localeInfo, boolean override, boolean init) {
         applyLanguage(context, localeInfo, override, init, false, false);
     }
 
+    /**
+     * 应用语言
+     * @param context 上下文
+     * @param localeInfo 语言包信息
+     * @param override 覆盖当前语言设置，会调用 saveLanguageKeyInLocal
+     * @param init app 正在初始化
+     * @param fromFile 从文件中读取
+     * @param force 强制从云端拉最新数据后应用语言
+     */
     public void applyLanguage(Context context, final LocaleInfo localeInfo, boolean override, boolean init, boolean fromFile, boolean force) {
         if (localeInfo == null) {
             return;
@@ -1783,6 +1799,14 @@ public class MLang {
     }
 
     public void loadRemoteLanguages(Context context) {
+        loadRemoteLanguages(context, null);
+    }
+
+    public interface FinishLoadCallback {
+        void finishLoad();
+    }
+
+    public void loadRemoteLanguages(Context context, FinishLoadCallback callback) {
         if (loadingRemoteLanguages) {
             return;
         }
@@ -1839,7 +1863,9 @@ public class MLang {
                     a--;
                 }
                 saveOtherLanguages(context);
-                //                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.suggestedLangpack);TODO ?
+                if (callback != null) {
+                    callback.finishLoad();
+                }
                 applyLanguage(context, currentLocaleInfo, true, false);
             });
         }
