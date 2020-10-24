@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Xml;
 
-import com.timecat.component.locale.R;
 import com.timecat.component.locale.model.LangPackDifference;
 import com.timecat.component.locale.model.LangPackLanguage;
 import com.timecat.component.locale.model.LangPackString;

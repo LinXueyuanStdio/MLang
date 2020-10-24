@@ -11,6 +11,7 @@
     <string name="YesterdayAtFormatted">yesterday at %1$s</string>
     <string name="LastSeenFormatted">last seen %1$s</string>
     <string name="LastSeenDateFormatted">last seen %1$s</string>
+
     <string name="January">January</string>
     <string name="February">February</string>
     <string name="March">March</string>
@@ -23,6 +24,7 @@
     <string name="October">October</string>
     <string name="November">November</string>
     <string name="December">December</string>
+
     <string name="MetersAway2">%1$s m away</string>
     <string name="KMetersAway2">%1$s km away</string>
     <string name="FootsAway">%1$s ft away</string>
