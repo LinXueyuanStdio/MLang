@@ -6,8 +6,11 @@ import android.content.res.Configuration;
 
 import com.locale.lib.AbsLangAction;
 import com.locale.lib.MLang;
+import com.locale.lib.model.LangPackDifference;
+import com.locale.lib.model.LangPackLanguage;
 
 import java.io.File;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,18 +56,48 @@ public class MyLang {
             }
 
             @Override
-            public void langpack_getDifference(String lang_pack, String lang_code, int from_version, @NonNull GetDifferenceCallback callback) {
-
+            public void langpack_getDifference(String lang_pack, String lang_code, int from_version, @NonNull final GetDifferenceCallback callback) {
+                Server.request_langpack_getDifference(lang_pack, lang_code, from_version, new Server.GetDifferenceCallback() {
+                    @Override
+                    public void onNext(final LangPackDifference difference) {
+                        runOnUIThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onLoad(difference);
+                            }
+                        });
+                    }
+                });
             }
 
             @Override
-            public void langpack_getLanguages(@NonNull GetLanguagesCallback callback) {
-
+            public void langpack_getLanguages(@NonNull final GetLanguagesCallback callback) {
+                Server.request_langpack_getLanguages(new Server.GetLanguagesCallback() {
+                    @Override
+                    public void onNext(final List<LangPackLanguage> languageList) {
+                        runOnUIThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onLoad(languageList);
+                            }
+                        });
+                    }
+                });
             }
 
             @Override
-            public void langpack_getLangPack(String lang_code, @NonNull GetLangPackCallback callback) {
-
+            public void langpack_getLangPack(String lang_code, @NonNull final GetLangPackCallback callback) {
+                Server.request_langpack_getLangPack(lang_code, new Server.GetLangPackCallback() {
+                    @Override
+                    public void onNext(final LangPackDifference difference) {
+                        runOnUIThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onLoad(difference);
+                            }
+                        });
+                    }
+                });
             }
         };
         try {
