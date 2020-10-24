@@ -8,7 +8,7 @@ import android.os.Handler;
 
 import androidx.annotation.NonNull;
 
-public class MyApplication extends Application{
+public class MyApplication extends Application {
     @SuppressLint("StaticFieldLeak")
     public static volatile Context applicationContext;
     public static volatile Handler applicationHandler;
