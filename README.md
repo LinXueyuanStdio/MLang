@@ -78,8 +78,9 @@ public class MyLang {
 
 使用字符串
 ```java
-//本地和云端都存在都字符串
+//本地和云端都存在的字符串
 MyLang.getString("local_string", R.string.local_string)
+
 //本地没有，云端存在的字符串
 MyLang.getString("remote_string_only", R.string.fallback_string)
 ```
@@ -87,6 +88,7 @@ MyLang.getString("remote_string_only", R.string.fallback_string)
 ```java
 //应用一种语言（这里自动处理了语言包的升级、语言包内部字符串的升级）
 MyLang.getInstance().applyLanguage(Context, MLang.LocaleInfo, force=true, init=false);
+
 //删除一种语言
 MyLang.getInstance().deleteLanguage(Context, MLang.LocaleInfo);
 ```
@@ -94,10 +96,13 @@ MyLang.getInstance().deleteLanguage(Context, MLang.LocaleInfo);
 ```java
 //1. 所有云端的语言包
 MyLang.getInstance().remoteLanguages
+
 //2. 所有下载到本地、可用的语言包
 MyLang.getInstance().languages
+
 //3. 所有非官方的语言包
 MyLang.getInstance().unofficialLanguages
+
 //4. 除内置支持的语言外，另外安装的云端的语言包
 MyLang.getInstance().otherLanguages
 ```
