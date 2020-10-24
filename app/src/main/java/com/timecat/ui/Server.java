@@ -1,8 +1,8 @@
-package com.locale.ui;
+package com.timecat.ui;
 
-import com.locale.lib.model.LangPackDifference;
-import com.locale.lib.model.LangPackLanguage;
-import com.locale.lib.model.LangPackString;
+import com.timecat.component.locale.model.LangPackDifference;
+import com.timecat.component.locale.model.LangPackLanguage;
+import com.timecat.component.locale.model.LangPackString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
  * @author 林学渊
  * @email linxy59@mail2.sysu.edu.cn
  * @date 2020/10/24
- * @description null
+ * @description 模仿服务器端
  * @usage null
  */
 public class Server {
@@ -22,6 +22,7 @@ public class Server {
         list.add(new LangPackString("", ""));
         return list;
     }
+
     public static ArrayList<LangPackString> chineseStrings() {
         ArrayList<LangPackString> list = new ArrayList<>();
         list.add(new LangPackString("", ""));
@@ -52,6 +53,7 @@ public class Server {
         langPackLanguage.native_name = "简体中文";
         return langPackLanguage;
     }
+
     public static LangPackLanguage englishLanguage() {
         LangPackLanguage langPackLanguage = new LangPackLanguage();
         langPackLanguage.name = "english";
@@ -69,20 +71,24 @@ public class Server {
     public static void request_langpack_getDifference(String lang_pack, String lang_code, int from_version, @NonNull final GetDifferenceCallback callback) {
 
     }
-    public static void request_langpack_getLanguages(@NonNull GetLanguagesCallback callback) {
 
+    public static void request_langpack_getLanguages(@NonNull GetLanguagesCallback callback) {
+        callback.onNext(avaliable());
     }
+
     public static void request_langpack_getLangPack(String lang_code, @NonNull GetLangPackCallback callback) {
 
     }
 
-    public interface GetDifferenceCallback{
+    public interface GetDifferenceCallback {
         void onNext(final LangPackDifference difference);
     }
-    public interface GetLanguagesCallback{
+
+    public interface GetLanguagesCallback {
         void onNext(final List<LangPackLanguage> languageList);
     }
-    public interface GetLangPackCallback{
+
+    public interface GetLangPackCallback {
         void onNext(final LangPackDifference difference);
     }
 }

@@ -1,7 +1,7 @@
-package com.locale.lib;
+package com.timecat.component.locale;
 
-import com.locale.lib.model.LangPackDifference;
-import com.locale.lib.model.LangPackLanguage;
+import com.timecat.component.locale.model.LangPackDifference;
+import com.timecat.component.locale.model.LangPackLanguage;
 
 import java.util.List;
 

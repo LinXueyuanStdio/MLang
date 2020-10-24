@@ -1,4 +1,4 @@
-package com.locale.lib.model;
+package com.timecat.component.locale.model;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.locale.ui;
+package com.timecat.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Application;

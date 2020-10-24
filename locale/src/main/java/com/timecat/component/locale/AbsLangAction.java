@@ -1,4 +1,4 @@
-package com.locale.lib;
+package com.timecat.component.locale;
 
 import android.content.Context;
 

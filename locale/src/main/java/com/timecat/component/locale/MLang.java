@@ -1,4 +1,4 @@
-package com.locale.lib;
+package com.timecat.component.locale;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -14,10 +14,11 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Xml;
 
-import com.locale.lib.model.LangPackDifference;
-import com.locale.lib.model.LangPackLanguage;
-import com.locale.lib.model.LangPackString;
-import com.locale.lib.time.FastDateFormat;
+import com.timecat.component.locale.R;
+import com.timecat.component.locale.model.LangPackDifference;
+import com.timecat.component.locale.model.LangPackLanguage;
+import com.timecat.component.locale.model.LangPackString;
+import com.timecat.component.locale.time.FastDateFormat;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -239,7 +240,7 @@ public class MLang {
     private boolean loadingRemoteLanguages;
 
     /**
-     * 当前可用的语言
+     * 当前已下载到本地的可用的语言
      */
     public ArrayList<LocaleInfo> languages = new ArrayList<>();
     /**

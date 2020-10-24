@@ -1,13 +1,13 @@
-package com.locale.ui;
+package com.timecat.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 
-import com.locale.lib.AbsLangAction;
-import com.locale.lib.MLang;
-import com.locale.lib.model.LangPackDifference;
-import com.locale.lib.model.LangPackLanguage;
+import com.timecat.component.locale.AbsLangAction;
+import com.timecat.component.locale.MLang;
+import com.timecat.component.locale.model.LangPackDifference;
+import com.timecat.component.locale.model.LangPackLanguage;
 
 import java.io.File;
 import java.util.List;

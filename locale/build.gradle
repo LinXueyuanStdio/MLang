@@ -31,3 +31,24 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
 }
+
+//////// 打包发布配置开始 ////////
+apply plugin: 'maven'
+ext {
+    DIST_PATH = "../dist"
+    PUBLISH_GROUP_ID = 'com.timecat.component'
+    PUBLISH_ARTIFACT_ID = 'MLang'
+    PUBLISH_VERSION = "1.0.0"
+}
+uploadArchives {
+    repositories.mavenDeployer {
+        def deployPath = file(project.DIST_PATH)
+        repository(url: "file://${deployPath.absolutePath}")
+        pom.project {
+            groupId project.PUBLISH_GROUP_ID
+            artifactId project.PUBLISH_ARTIFACT_ID
+            version project.PUBLISH_VERSION
+        }
+    }
+}
+//////// 打包发布配置结束 ////////
