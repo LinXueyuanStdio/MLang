@@ -29,7 +29,8 @@ public class LangPackLanguage {
      */
     public String native_name = "";
     /**
-     * 版本名字
+     * 语言名字
+     * zh en fr ja
      */
     public String lang_code = "";
     public String base_lang_code = "";

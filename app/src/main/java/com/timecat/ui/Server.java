@@ -31,18 +31,34 @@ public class Server {
         return list;
     }
 
+    public static ArrayList<LangPackString> frenchStrings() {
+        ArrayList<LangPackString> list = new ArrayList<>();
+        list.add(new LangPackString("LanguageName", "法语"));
+        list.add(new LangPackString("test", "000测试"));
+        return list;
+    }
+
     public static LangPackDifference englishPackDifference() {
         LangPackDifference difference = new LangPackDifference();
-        difference.lang_code = "english";
+        difference.lang_code = "en";
         difference.from_version = 0;
         difference.version = 1;
         difference.strings = englishStrings();
         return difference;
     }
 
+    public static LangPackDifference frenchPackDifference() {
+        LangPackDifference difference = new LangPackDifference();
+        difference.lang_code = "fr";
+        difference.from_version = 0;
+        difference.version = 1;
+        difference.strings = frenchStrings();
+        return difference;
+    }
+
     public static LangPackDifference chinesePackDifference() {
         LangPackDifference difference = new LangPackDifference();
-        difference.lang_code = "chinese";
+        difference.lang_code = "zh";
         difference.from_version = 0;
         difference.version = 1;
         difference.strings = chineseStrings();
@@ -53,6 +69,17 @@ public class Server {
         LangPackLanguage langPackLanguage = new LangPackLanguage();
         langPackLanguage.name = "chinese";
         langPackLanguage.native_name = "简体中文";
+        langPackLanguage.lang_code = "zh";
+        langPackLanguage.base_lang_code = "zh";
+        return langPackLanguage;
+    }
+
+    public static LangPackLanguage frenchLanguage() {
+        LangPackLanguage langPackLanguage = new LangPackLanguage();
+        langPackLanguage.name = "french";
+        langPackLanguage.native_name = "French";
+        langPackLanguage.lang_code = "fr";
+        langPackLanguage.base_lang_code = "fr";
         return langPackLanguage;
     }
 
@@ -60,6 +87,8 @@ public class Server {
         LangPackLanguage langPackLanguage = new LangPackLanguage();
         langPackLanguage.name = "english";
         langPackLanguage.native_name = "English";
+        langPackLanguage.lang_code = "en";
+        langPackLanguage.base_lang_code = "en";
         return langPackLanguage;
     }
 
@@ -67,11 +96,18 @@ public class Server {
         List<LangPackLanguage> langPackLanguages = new ArrayList<>();
         langPackLanguages.add(englishLanguage());
         langPackLanguages.add(chineseLanguage());
+        langPackLanguages.add(frenchLanguage());
         return langPackLanguages;
     }
 
     public static void request_langpack_getDifference(String lang_pack, String lang_code, int from_version, @NonNull final GetDifferenceCallback callback) {
-        callback.onNext(chinesePackDifference());
+        if ("zh".equals(lang_code)) {
+            callback.onNext(chinesePackDifference());
+        } else if ("en".equals(lang_code)) {
+            callback.onNext(englishPackDifference());
+        } else if ("fr".equals(lang_code)) {
+            callback.onNext(frenchPackDifference());
+        }
     }
 
     public static void request_langpack_getLanguages(@NonNull GetLanguagesCallback callback) {
@@ -79,7 +115,13 @@ public class Server {
     }
 
     public static void request_langpack_getLangPack(String lang_code, @NonNull GetLangPackCallback callback) {
-        callback.onNext(chinesePackDifference());
+        if ("zh".equals(lang_code)) {
+            callback.onNext(chinesePackDifference());
+        } else if ("en".equals(lang_code)) {
+            callback.onNext(englishPackDifference());
+        } else if ("fr".equals(lang_code)) {
+            callback.onNext(frenchPackDifference());
+        }
     }
 
     public interface GetDifferenceCallback {
