@@ -471,26 +471,26 @@ public class MLang {
         return currentLocaleInfo.isLocal();
     }
 
-    public void reloadCurrentRemoteLocale(Context context, String langCode, boolean force) {
+    public void reloadCurrentRemoteLocale(Context context, String langCode, boolean force, final FinishLoadCallback callback) {
         if (langCode != null) {
             langCode = langCode.replace("-", "_");
         }
         if (langCode == null || currentLocaleInfo != null && (langCode.equals(currentLocaleInfo.shortName) || langCode.equals(currentLocaleInfo.baseLangCode))) {
-            applyRemoteLanguage(context, currentLocaleInfo, langCode, force);
+            applyRemoteLanguage(context, currentLocaleInfo, langCode, force, callback);
         }
     }
 
-    public void checkUpdateForCurrentRemoteLocale(Context context, int version, int baseVersion) {
+    public void checkUpdateForCurrentRemoteLocale(Context context, int version, int baseVersion, final FinishLoadCallback callback) {
         if (currentLocaleInfo == null || currentLocaleInfo != null && !currentLocaleInfo.isRemote() && !currentLocaleInfo.isUnofficial()) {
             return;
         }
         if (currentLocaleInfo.hasBaseLang()) {
             if (currentLocaleInfo.baseVersion < baseVersion) {
-                applyRemoteLanguage(context, currentLocaleInfo, currentLocaleInfo.baseLangCode, false);
+                applyRemoteLanguage(context, currentLocaleInfo, currentLocaleInfo.baseLangCode, false, callback);
             }
         }
         if (currentLocaleInfo.version < version) {
-            applyRemoteLanguage(context, currentLocaleInfo, currentLocaleInfo.shortName, false);
+            applyRemoteLanguage(context, currentLocaleInfo, currentLocaleInfo.shortName, false, callback);
         }
     }
 
@@ -609,6 +609,15 @@ public class MLang {
      * @return 是否应用成功
      */
     public boolean applyLanguageFile(Context context, File file) {
+        return applyLanguageFile(context, file, null);
+    }
+
+    /**
+     * 解析翻译文件并应用
+     * @param file 语言文件
+     * @return 是否应用成功
+     */
+    public boolean applyLanguageFile(Context context, File file, final FinishLoadCallback callback) {
         try {
             HashMap<String, String> stringMap = getLocaleFileStrings(file);
 
@@ -656,7 +665,7 @@ public class MLang {
                     saveOtherLanguages(context);
                 }
                 localeValues = stringMap;
-                applyLanguage(context, localeInfo, true, false, true, false);
+                applyLanguage(context, localeInfo, true, false, true, false, callback);
                 return true;
             }
         } catch (Exception e) {
@@ -867,7 +876,19 @@ public class MLang {
      * @param init app 正在初始化
      */
     public void applyLanguage(Context context, LocaleInfo localeInfo, boolean override, boolean init) {
-        applyLanguage(context, localeInfo, override, init, false, false);
+        applyLanguage(context, localeInfo, override, init, null);
+    }
+
+
+    /**
+     * 应用语言
+     * @param context 上下文
+     * @param localeInfo 语言包信息
+     * @param override 覆盖当前语言设置，会调用 saveLanguageKeyInLocal
+     * @param init app 正在初始化
+     */
+    public void applyLanguage(Context context, LocaleInfo localeInfo, boolean override, boolean init, final FinishLoadCallback callback) {
+        applyLanguage(context, localeInfo, override, init, false, false, callback);
     }
 
     /**
@@ -879,7 +900,7 @@ public class MLang {
      * @param fromFile 从文件中读取
      * @param force 强制从云端拉最新数据后应用语言
      */
-    public void applyLanguage(final Context context, final LocaleInfo localeInfo, boolean override, boolean init, boolean fromFile, final boolean force) {
+    public void applyLanguage(final Context context, final LocaleInfo localeInfo, boolean override, boolean init, boolean fromFile, final boolean force, final FinishLoadCallback callback) {
         if (localeInfo == null) {
             return;
         }
@@ -909,11 +930,11 @@ public class MLang {
                 runOnUIThread(new Runnable() {
                     @Override
                     public void run() {
-                        MLang.this.applyRemoteLanguage(context, localeInfo, null, true);
+                        MLang.this.applyRemoteLanguage(context, localeInfo, null, true, callback);
                     }
                 });
             } else {
-                applyRemoteLanguage(context, localeInfo, null, true);
+                applyRemoteLanguage(context, localeInfo, null, true, callback);
             }
         }
         try {
@@ -971,11 +992,11 @@ public class MLang {
                     runOnUIThread(new Runnable() {
                         @Override
                         public void run() {
-                            MLang.this.reloadCurrentRemoteLocale(context, null, force);
+                            MLang.this.reloadCurrentRemoteLocale(context, null, force, callback);
                         }
                     });
                 } else {
-                    reloadCurrentRemoteLocale(context, null, force);
+                    reloadCurrentRemoteLocale(context, null, force, callback);
                 }
                 reloadLastFile = false;
             }
@@ -1701,7 +1722,7 @@ public class MLang {
         return str.replace("<", "&lt;").replace(">", "&gt;").replace("& ", "&amp; ");
     }
 
-    public void saveRemoteLocaleStringsForCurrentLocale(Context context, final LangPackDifference difference) {
+    public void saveRemoteLocaleStringsForCurrentLocale(Context context, final LangPackDifference difference, final FinishLoadCallback callback) {
         if (currentLocaleInfo == null) {
             return;
         }
@@ -1709,10 +1730,10 @@ public class MLang {
         if (!langCode.equals(currentLocaleInfo.shortName) && !langCode.equals(currentLocaleInfo.baseLangCode)) {
             return;
         }
-        saveRemoteLocaleStrings(context, currentLocaleInfo, difference);
+        saveRemoteLocaleStrings(context, currentLocaleInfo, difference, callback);
     }
 
-    public void saveRemoteLocaleStrings(final Context context, final LocaleInfo localeInfo, final LangPackDifference difference) {
+    public void saveRemoteLocaleStrings(final Context context, final LocaleInfo localeInfo, final LangPackDifference difference, final FinishLoadCallback callback) {
         if (difference == null || difference.strings.isEmpty() || localeInfo == null || localeInfo.isLocal()) {
             return;
         }
@@ -1822,7 +1843,9 @@ public class MLang {
                         changingConfiguration = false;
                     }
                     MLang.this.recreateFormatters(context);
-                    //                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);TODO ?
+                    if (callback != null) {
+                        callback.finishLoad();
+                    }
                 }
             });
         } catch (Exception ignore) {
@@ -1906,7 +1929,7 @@ public class MLang {
         }
     }
 
-    private void applyRemoteLanguage(final Context context, final LocaleInfo localeInfo, String langCode, boolean force) {
+    private void applyRemoteLanguage(final Context context, final LocaleInfo localeInfo, String langCode, boolean force, final FinishLoadCallback callback) {
         if (localeInfo == null || localeInfo != null && !localeInfo.isRemote() && !localeInfo.isUnofficial()) {
             return;
         }
@@ -1917,7 +1940,7 @@ public class MLang {
                         action.langpack_getDifference("", localeInfo.getLangCode(), localeInfo.version, new LangAction.GetDifferenceCallback() {
                             @Override
                             public void onLoad(LangPackDifference languageList) {
-                                saveRemoteLocaleStrings(context, localeInfo, languageList);
+                                saveRemoteLocaleStrings(context, localeInfo, languageList, callback);
                             }
                         });
                     }
@@ -1927,7 +1950,7 @@ public class MLang {
                     action.langpack_getLangPack(localeInfo.getBaseLangCode(), new LangAction.GetLangPackCallback() {
                         @Override
                         public void onLoad(LangPackDifference languageList) {
-                            saveRemoteLocaleStrings(context, localeInfo, languageList);
+                            saveRemoteLocaleStrings(context, localeInfo, languageList, callback);
                         }
                     });
                 }
@@ -1939,7 +1962,7 @@ public class MLang {
                     action.langpack_getDifference("", localeInfo.getLangCode(), localeInfo.version, new LangAction.GetDifferenceCallback() {
                         @Override
                         public void onLoad(LangPackDifference languageList) {
-                            saveRemoteLocaleStrings(context, localeInfo, languageList);
+                            saveRemoteLocaleStrings(context, localeInfo, languageList, callback);
                         }
                     });
                 }
@@ -1948,7 +1971,7 @@ public class MLang {
                     action.langpack_getLangPack(localeInfo.getLangCode(), new LangAction.GetLangPackCallback() {
                         @Override
                         public void onLoad(LangPackDifference languageList) {
-                            saveRemoteLocaleStrings(context, localeInfo, languageList);
+                            saveRemoteLocaleStrings(context, localeInfo, languageList, callback);
                         }
                     });
                 }

@@ -42,17 +42,13 @@ public class MyLang {
 
             @Override
             public void saveLanguageKeyInLocal(String language) {
-                SharedPreferences preferences = getContext().getSharedPreferences("language_locale", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("language", language);
-                editor.apply();
+                MyLang.saveLanguageKeyInLocal(language);
             }
 
             @Nullable
             @Override
             public String loadLanguageKeyInLocal() {
-                SharedPreferences preferences = getContext().getSharedPreferences("language_locale", Context.MODE_PRIVATE);
-                return preferences.getString("language", null);
+                return MyLang.loadLanguageKeyInLocal();
             }
 
             @Override
@@ -105,6 +101,19 @@ public class MyLang {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void saveLanguageKeyInLocal(String language) {
+        SharedPreferences preferences = getContext().getSharedPreferences("language_locale", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("language", language);
+        editor.apply();
+    }
+
+    @Nullable
+    public static String loadLanguageKeyInLocal() {
+        SharedPreferences preferences = getContext().getSharedPreferences("language_locale", Context.MODE_PRIVATE);
+        return preferences.getString("language", null);
     }
 
     public static void onConfigurationChanged(@NonNull Context applicationContext, @NonNull Configuration newConfig) {

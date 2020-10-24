@@ -20,21 +20,27 @@ public class Server {
     public static ArrayList<LangPackString> englishStrings() {
         ArrayList<LangPackString> list = new ArrayList<>();
         list.add(new LangPackString("LanguageName", "English"));
-        list.add(new LangPackString("test", "test"));
+        list.add(new LangPackString("LanguageNameInEnglish", "English"));
+        list.add(new LangPackString("local_string", "remote string in english"));
+        list.add(new LangPackString("remote_string_only", "not existing locally, only existing remotely"));
         return list;
     }
 
     public static ArrayList<LangPackString> chineseStrings() {
         ArrayList<LangPackString> list = new ArrayList<>();
         list.add(new LangPackString("LanguageName", "中文简体"));
-        list.add(new LangPackString("test", "测试"));
+        list.add(new LangPackString("LanguageNameInEnglish", "Chinese"));
+        list.add(new LangPackString("local_string", "中文的云端字符串"));
+        list.add(new LangPackString("remote_string_only", "本地缺失，云端存在的字符串"));
         return list;
     }
 
     public static ArrayList<LangPackString> frenchStrings() {
         ArrayList<LangPackString> list = new ArrayList<>();
         list.add(new LangPackString("LanguageName", "法语"));
-        list.add(new LangPackString("test", "000测试"));
+        list.add(new LangPackString("LanguageNameInEnglish", "French"));
+        list.add(new LangPackString("local_string", "法语的云端字符串"));
+        list.add(new LangPackString("remote_string_only", "法语的本地缺失，云端存在的字符串"));
         return list;
     }
 
@@ -92,7 +98,7 @@ public class Server {
         return langPackLanguage;
     }
 
-    public static List<LangPackLanguage> avaliable() {
+    public static List<LangPackLanguage> available() {
         List<LangPackLanguage> langPackLanguages = new ArrayList<>();
         langPackLanguages.add(englishLanguage());
         langPackLanguages.add(chineseLanguage());
@@ -111,7 +117,7 @@ public class Server {
     }
 
     public static void request_langpack_getLanguages(@NonNull GetLanguagesCallback callback) {
-        callback.onNext(avaliable());
+        callback.onNext(available());
     }
 
     public static void request_langpack_getLangPack(String lang_code, @NonNull GetLangPackCallback callback) {

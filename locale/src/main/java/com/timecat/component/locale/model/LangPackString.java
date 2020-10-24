@@ -15,6 +15,7 @@ public class LangPackString {
     public String value;
 
     public LangPackString(String key, String value) {
+        this.flag = NEW_OR_REPLACE;
         this.key = key;
         this.value = value;
     }
