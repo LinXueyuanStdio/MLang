@@ -30,10 +30,9 @@ public class MainActivity extends Activity {
         detail.setGravity(Gravity.CENTER);
         String detailText = "语言详情"
                 + "\n"
-                + "当前语言设置："
-                + MyLang.loadLanguageKeyInLocal()
-                + "\n当前语言的英语名："
-                + MyLang.getString("LanguageNameInEnglish", R.string.LanguageNameInEnglish)
+                + "当前语言设置：" + MyLang.loadLanguageKeyInLocal()
+                + "\n"
+                + "当前语言的英语名：" + MyLang.getString("LanguageNameInEnglish", R.string.LanguageNameInEnglish)
                 + "\n\n本地缺失，云端存在的字符串：\n"
                 + MyLang.getString("remote_string_only", R.string.fallback_string)
                 + "\n\n本地云端都存在，云端将覆盖本地的字符串：\n"
@@ -61,7 +60,6 @@ public class MainActivity extends Activity {
             }
         });
 
-        //获取状态栏高度
         setContentView(containerLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 

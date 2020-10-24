@@ -116,8 +116,8 @@ public class MyLang {
         return preferences.getString("language", null);
     }
 
-    public static void onConfigurationChanged(@NonNull Context applicationContext, @NonNull Configuration newConfig) {
-        MLang.getInstance(applicationContext).onDeviceConfigurationChange(applicationContext, newConfig);
+    public static void onConfigurationChanged(@NonNull Configuration newConfig) {
+        MLang.getInstance(getContext()).onDeviceConfigurationChange(getContext(), newConfig);
     }
 
     public static Context getContext() {

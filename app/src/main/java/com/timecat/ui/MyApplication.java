@@ -24,6 +24,6 @@ public class MyApplication extends Application{
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        MyLang.onConfigurationChanged(applicationContext, newConfig);
+        MyLang.onConfigurationChanged(newConfig);
     }
 }
