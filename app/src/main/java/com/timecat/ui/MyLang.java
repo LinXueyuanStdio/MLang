@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 
 import com.timecat.component.locale.LangAction;
+import com.timecat.component.locale.LocaleInfo;
 import com.timecat.component.locale.MLang;
 import com.timecat.component.locale.Util;
 
@@ -65,6 +66,14 @@ public class MyLang {
 
     public static File getFilesDirFixed(Context context) {
         return Util.getFilesDirFixed(context, "/data/data/com.locale.ui/files");
+    }
+
+    public static void loadRemoteLanguages(final Context context, final MLang.FinishLoadCallback callback) {
+        getInstance().loadRemoteLanguages(context, callback);
+    }
+
+    public static void applyLanguage(Context context, LocaleInfo localeInfo) {
+        getInstance().applyLanguage(context, localeInfo);
     }
 
     public static String getSystemLocaleStringIso639() {

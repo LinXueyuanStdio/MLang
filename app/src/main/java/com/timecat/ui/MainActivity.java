@@ -14,18 +14,23 @@ import com.timecat.component.locale.LocaleInfo;
 import com.timecat.component.locale.MLang;
 
 public class MainActivity extends Activity {
-    LinearLayout containerLayout;
-    TextView detail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        rebuild();
+    }
 
-        containerLayout = new LinearLayout(this);
+    private void rebuild() {
+        setContentView(buildUi(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    private ViewGroup buildUi() {
+        final LinearLayout containerLayout = new LinearLayout(this);
         containerLayout.setOrientation(LinearLayout.VERTICAL);
 
-        detail = new TextView(this);
+        final TextView detail = new TextView(this);
         detail.setPadding(20, 20, 20, 20);
         detail.setTextSize(18);
         detail.setGravity(Gravity.CENTER);
@@ -41,28 +46,25 @@ public class MainActivity extends Activity {
         detail.setText(detailText);
         containerLayout.addView(detail);
         MLang.USE_CLOUD_STRINGS = true;
-        MyLang.getInstance().loadRemoteLanguages(this, new MLang.FinishLoadCallback() {
+        MyLang.loadRemoteLanguages(this, new MLang.FinishLoadCallback() {
             @Override
             public void finishLoad() {
                 containerLayout.removeAllViews();
                 containerLayout.addView(detail);
                 for (final LocaleInfo info : MyLang.getInstance().remoteLanguages) {
-                    Button language = new Button(MainActivity.this);
-                    language.setText(info.getSaveString());
-                    language.setOnClickListener(new View.OnClickListener() {
+                    Button btn = new Button(MainActivity.this);
+                    btn.setText(info.getSaveString());
+                    btn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            MyLang.getInstance().applyLanguage(MainActivity.this, info);
-                            recreate();
+                            MyLang.applyLanguage(MainActivity.this, info);
+                            rebuild();
                         }
                     });
-                    containerLayout.addView(language);
+                    containerLayout.addView(btn);
                 }
             }
         });
-
-        setContentView(containerLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        return containerLayout;
     }
-
-
 }
