@@ -33,7 +33,7 @@ ext {
     DIST_PATH = ".."
     PUBLISH_GROUP_ID = 'com.timecat.component'
     PUBLISH_ARTIFACT_ID = 'MLang'
-    PUBLISH_VERSION = "1.0.1"
+    PUBLISH_VERSION = "2.0.0"
 }
 uploadArchives {
     repositories.mavenDeployer {

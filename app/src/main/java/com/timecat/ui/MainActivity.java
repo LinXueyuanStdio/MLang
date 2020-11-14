@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.timecat.component.locale.LocaleInfo;
 import com.timecat.component.locale.MLang;
 
 public class MainActivity extends Activity {
@@ -45,13 +46,13 @@ public class MainActivity extends Activity {
             public void finishLoad() {
                 containerLayout.removeAllViews();
                 containerLayout.addView(detail);
-                for (final MLang.LocaleInfo info : MyLang.getInstance().remoteLanguages) {
+                for (final LocaleInfo info : MyLang.getInstance().remoteLanguages) {
                     Button language = new Button(MainActivity.this);
                     language.setText(info.getSaveString());
                     language.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            MyLang.getInstance().applyLanguage(MainActivity.this, info, true, false);
+                            MyLang.getInstance().applyLanguage(MainActivity.this, info);
                             recreate();
                         }
                     });

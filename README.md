@@ -5,10 +5,45 @@
 - [x] 动态下发语言包
 - [x] 语言包的增加、升级、删除
 - [x] 语言包内部任意字符串的增加、升级、删除
+- [x] 自定义语言包的存储路径
 - [x] 跟随系统语言
+- [x] 处理各种语言的时区、时间格式化问题
+- [x] 处理各种语言的复数格式化问题
 - [x] static 方法 + 单例模式，一处安装，到处使用
-- [x] 详尽的中文注释
-- [x] 完善的 demo
+
+## 使用
+
+使用字符串
+```java
+// 本地和云端都存在的字符串
+MyLang.getString("local_string", R.string.local_string)
+
+// 云端存在 remote_string_only
+// 但本地没有 R.string.remote_string_only，用 R.string.fallback_string 代替
+MyLang.getString("remote_string_only", R.string.fallback_string)
+```
+使用语言包
+```java
+//应用一种语言（这里自动处理了语言包的升级、语言包内部字符串的升级）
+MyLang.getInstance().applyLanguage(Context, LocaleInfo, force=true, init=false);
+
+//删除一种语言
+MyLang.getInstance().deleteLanguage(Context, LocaleInfo);
+```
+`LocaleInfo` 可以在以下地方找到
+```java
+//1. 所有云端的语言包
+MyLang.getInstance().remoteLanguages
+
+//2. 所有下载到本地、可用的语言包
+MyLang.getInstance().languages
+
+//3. 所有非官方的语言包
+MyLang.getInstance().unofficialLanguages
+
+//4. 除内置支持的语言外，另外安装的云端的语言包
+MyLang.getInstance().otherLanguages
+```
 
 ## 安装
 
@@ -55,7 +90,6 @@ public class MyApplication extends Application {
 ```java
 public class MyLang {
     public static void init(@NonNull Context applicationContext) {
-        MLang.action = new AbsLangAction() {...};
         try {
             MLang.getInstance(applicationContext);
         } catch (Exception e) {
@@ -72,37 +106,4 @@ public class MyLang {
 }
 ```
 
-`AbsLangAction` 抽象类定义了必要的网络接口，注释和demo给出了详细的说明和实现，只需照抄即可。
-
-## 使用
-
-使用字符串
-```java
-//本地和云端都存在的字符串
-MyLang.getString("local_string", R.string.local_string)
-
-//本地没有，云端存在的字符串
-MyLang.getString("remote_string_only", R.string.fallback_string)
-```
-使用语言包
-```java
-//应用一种语言（这里自动处理了语言包的升级、语言包内部字符串的升级）
-MyLang.getInstance().applyLanguage(Context, MLang.LocaleInfo, force=true, init=false);
-
-//删除一种语言
-MyLang.getInstance().deleteLanguage(Context, MLang.LocaleInfo);
-```
-`MLang.LocaleInfo` 可以在以下地方找到
-```java
-//1. 所有云端的语言包
-MyLang.getInstance().remoteLanguages
-
-//2. 所有下载到本地、可用的语言包
-MyLang.getInstance().languages
-
-//3. 所有非官方的语言包
-MyLang.getInstance().unofficialLanguages
-
-//4. 除内置支持的语言外，另外安装的云端的语言包
-MyLang.getInstance().otherLanguages
-```
+`LangAction` 抽象类定义了必要的网络接口，注释和demo给出了详细的说明和实现，只需照抄即可。

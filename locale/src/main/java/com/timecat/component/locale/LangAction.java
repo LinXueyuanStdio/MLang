@@ -17,6 +17,12 @@ import androidx.annotation.Nullable;
  */
 public interface LangAction {
     /**
+     * 在 UI 线程运行
+     * 比如 在应用语言包后要调用，在 UI 线程进行刷新
+     * @param runnable 要运行的 runnable
+     */
+    void runOnUIThread(Runnable runnable);
+    /**
      * SharedPreferences preferences = Utilities.getGlobalMainSettings();
      * SharedPreferences.Editor editor = preferences.edit();
      * editor.putString("language", language);
@@ -35,6 +41,8 @@ public interface LangAction {
 
     /**
      * 在其他线程网络请求，在主线程或UI线程调用callback
+     * 这里设计成这样，是因为这个方法里支持异步执行
+     * 您需要在合适的时机手动调用 callback，且只能调用一次
      * @param lang_pack 语言包名字
      * @param lang_code 语言包版本名称
      * @param from_version 语言包版本号
@@ -44,12 +52,16 @@ public interface LangAction {
 
     /**
      * 在其他线程网络请求，在主线程或UI线程调用callback
+     * 这里设计成这样，是因为这个方法里支持异步执行
+     * 您需要在合适的时机手动调用 callback，且只能调用一次
      * @param callback 在主线程或UI线程调用
      */
     void langpack_getLanguages(@NonNull GetLanguagesCallback callback);
 
     /**
      * 在其他线程网络请求，在主线程或UI线程调用callback
+     * 这里设计成这样，是因为这个方法里支持异步执行
+     * 您需要在合适的时机手动调用 callback，且只能调用一次
      * @param lang_code 语言包版本名称
      * @param callback 在主线程或UI线程调用
      */
