@@ -2,14 +2,22 @@
 
 `MLang` 是 MultiLanguage 的简写，是一款动态化的多语言框架。
 
+设计优雅
+- [x] 语言包存储格式为 xml 格式，和 res 下的 strings.xml 一致
+- [x] 零依赖，完全使用系统 api 和系统的 xml 解析器
+- [x] 不持有 context，无内存泄漏
+- [x] 静态方法 + 单例模式，一处安装，到处使用
+动态化语言包
 - [x] 动态下发语言包
 - [x] 语言包的增加、升级、删除
 - [x] 语言包内部任意字符串的增加、升级、删除
 - [x] 自定义语言包的存储路径
+完全兼容
 - [x] 跟随系统语言
+- [x] 时间格式跟随系统的 24 小时制
 - [x] 处理各种语言的时区、时间格式化问题
 - [x] 处理各种语言的复数格式化问题
-- [x] static 方法 + 单例模式，一处安装，到处使用
+- [x] 处理各种语言的阅读顺序问题（从左到右、从右到左）
 
 ## 1. 使用
 
@@ -93,22 +101,18 @@ public class MyApplication extends Application {
 
 ```java
 public class MyLang {
-    private static File filesDir = getFilesDirFixed(getContext());
-    private static LangAction action = new MyLangAction();
+    private static File filesDir;
+    private static LangAction action;
     public static void init(@NonNull Context applicationContext) {
-        getInstance(applicationContext);
+        filesDir = applicationContext.getCacheDir();
+        action = new MyLangAction();
+        getInstance();
+    }
+    public static MLang getInstance() {
+        return MLang.getInstance(MyApplication.applicationContext, filesDir, action);
     }
     public static void onConfigurationChanged(@NonNull Configuration newConfig) {
         getInstance().onDeviceConfigurationChange(getContext(), newConfig);
-    }
-    public static Context getContext() {
-        return MyApplication.applicationContext;
-    }
-    public static MLang getInstance() {
-        return getInstance(getContext());
-    }
-    public static MLang getInstance(Context context) {
-        return MLang.getInstance(context, filesDir, action);
     }
 }
 ```
