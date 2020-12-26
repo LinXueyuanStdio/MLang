@@ -1,13 +1,18 @@
 apply plugin: 'maven'
 
 def moduleConfigProps = new Properties()
-File moduleConfig = rootProject.file("moduleConfig.properties")
+File moduleConfig = project.file("moduleConfig.properties")
 if (moduleConfig.exists()) {
     moduleConfigProps.load(new FileInputStream(moduleConfig))
 }
+def rootProps = new Properties()
+File rootConfig = rootProject.file("moduleConfig.properties")
+if (rootConfig.exists()) {
+    rootProps.load(new FileInputStream(rootConfig))
+}
 
 ext {
-    DIST_PATH = moduleConfigProps.localMavenPath
+    DIST_PATH = rootProps.localMavenPath
     PUBLISH_GROUP_ID = moduleConfigProps.PUBLISH_GROUP_ID
     PUBLISH_ARTIFACT_ID = moduleConfigProps.PUBLISH_ARTIFACT_ID
     PUBLISH_VERSION = moduleConfigProps.PUBLISH_VERSION

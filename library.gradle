@@ -4,8 +4,8 @@ if (moduleConfig.exists()) {
     moduleConfigProps.load(new FileInputStream(moduleConfig))
 }
 
-def localMavenDir = file(moduleConfigProps.localMavenPath)
-def localGradleDir = file(moduleConfigProps.localGradlePath)
+def localMavenDir = new File(rootDir, moduleConfigProps.localMavenPath)
+def localGradleDir = new File(rootDir, moduleConfigProps.localGradlePath)
 def localLibraryGradleDir = new File(localGradleDir, "library")
 if (localLibraryGradleDir.exists()) {
     FilenameFilter filter = { dir, filename -> filename.endsWith(".gradle") }
