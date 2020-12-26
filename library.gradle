@@ -1,0 +1,16 @@
+def moduleConfigProps = new Properties()
+File moduleConfig = rootProject.file("moduleConfig.properties")
+if (moduleConfig.exists()) {
+    moduleConfigProps.load(new FileInputStream(moduleConfig))
+}
+
+def localMavenDir = file(moduleConfigProps.localMavenPath)
+def localGradleDir = file(moduleConfigProps.localGradlePath)
+def localLibraryGradleDir = new File(localGradleDir, "library")
+if (localLibraryGradleDir.exists()) {
+    FilenameFilter filter = { dir, filename -> filename.endsWith(".gradle") }
+    def gradleFiles = localLibraryGradleDir.listFiles filter
+    gradleFiles.each { file ->
+        apply from: "file://${file.absolutePath}"
+    }
+}

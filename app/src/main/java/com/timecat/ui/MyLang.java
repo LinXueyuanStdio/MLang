@@ -77,11 +77,11 @@ public class MyLang {
     }
 
     public static String getSystemLocaleStringIso639() {
-        return getInstance().getSystemLocaleStringIso639(getContext());
+        return getInstance().getSystemLocaleStringIso639();
     }
 
     public static String getLocaleStringIso639() {
-        return getInstance().getLocaleStringIso639(getContext());
+        return getInstance().getLocaleStringIso639();
     }
 
     public static String getLocaleAlias(String code) {

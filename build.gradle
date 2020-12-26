@@ -1,10 +1,18 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    
+    def moduleConfigProps = new Properties()
+    File moduleConfig = rootProject.file("moduleConfig.properties")
+    if (moduleConfig.exists()) {
+        moduleConfigProps.load(new FileInputStream(moduleConfig))
+    }
+    def localMavenPath = file(moduleConfigProps.localMavenPath)
+
     repositories {
         google()
         jcenter()
+//        maven { url "file://${localMavenPath.absolutePath}" }
+        maven { url "https://raw.githubusercontent.com/LinXueyuanStdio/MLang/main/dist" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.0'
@@ -18,7 +26,8 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url "https://raw.githubusercontent.com/LinXueyuanStdio/MLang/main" }
+//        maven { url "file://${localMavenPath.absolutePath}" }
+        maven { url "https://raw.githubusercontent.com/LinXueyuanStdio/MLang/main/dist" }
     }
 }
 

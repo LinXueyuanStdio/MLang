@@ -1,0 +1,26 @@
+apply plugin: 'maven'
+
+def moduleConfigProps = new Properties()
+File moduleConfig = rootProject.file("moduleConfig.properties")
+if (moduleConfig.exists()) {
+    moduleConfigProps.load(new FileInputStream(moduleConfig))
+}
+
+ext {
+    DIST_PATH = moduleConfigProps.localMavenPath
+    PUBLISH_GROUP_ID = moduleConfigProps.PUBLISH_GROUP_ID
+    PUBLISH_ARTIFACT_ID = moduleConfigProps.PUBLISH_ARTIFACT_ID
+    PUBLISH_VERSION = moduleConfigProps.PUBLISH_VERSION
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        def deployPath = file(project.DIST_PATH)
+        repository(url: "file://${deployPath.absolutePath}")
+        pom.project {
+            groupId project.PUBLISH_GROUP_ID
+            artifactId project.PUBLISH_ARTIFACT_ID
+            version project.PUBLISH_VERSION
+        }
+    }
+}
