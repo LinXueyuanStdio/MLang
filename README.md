@@ -70,7 +70,7 @@ allprojects {
 }
 
 //app/build.gradle
-implementation 'com.timecat.component:MLang:2.0.4'
+implementation 'com.timecat.component:MLang:2.0.1'
 ```
 
 2.2. 在 Application 中初始化，并监听系统语言的更改（如果跟随系统语言的话）：
