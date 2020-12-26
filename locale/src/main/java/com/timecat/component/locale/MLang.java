@@ -72,7 +72,7 @@ public class MLang {
     public static int distanceSystemType = 0;
     public static boolean isRTL = false;
     public static boolean is24HourFormat = false;
-    public static boolean USE_CLOUD_STRINGS = false;
+    public static boolean USE_CLOUD_STRINGS = true;
 
     public FastDateFormat formatterDay;
     public FastDateFormat formatterWeek;

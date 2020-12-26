@@ -310,3 +310,10 @@ public class Server {
     }
 }
 ```
+
+## 4. 进阶配置
+```java
+MLang.isRTL = false; //是否从右到左阅读（默认 false）
+MLang.is24HourFormat = false; //是否 24 小时制（默认 false）
+MLang.USE_CLOUD_STRINGS = true; //是否使用云端字符串（默认 true）
+```
