@@ -270,9 +270,37 @@ public class MyLangAction implements LangAction {
 [模拟的服务器数据](https://github.com/LinXueyuanStdio/MLang/blob/main/app/src/main/java/com/timecat/ui/Server.java)
 
 语言包实体
-- LangPackLanguage(name, version, ...)
+- `LangPackLanguage(name, version, ...)`
 
 语言包的数据
-- LangPackDifference(name, version, List<LangPackString>, ...)
-- LangPackString(key: String, value: String)
+- `LangPackDifference(name, version, List<LangPackString>, ...)`
+- `LangPackString(key: String, value: String)`
 
+```java
+public class Server {
+    public static LangPackLanguage chineseLanguage() {
+        LangPackLanguage langPackLanguage = new LangPackLanguage();
+        langPackLanguage.name = "chinese";
+        langPackLanguage.native_name = "简体中文";
+        langPackLanguage.lang_code = "zh";
+        langPackLanguage.base_lang_code = "zh";
+        return langPackLanguage;
+    }
+    public static LangPackDifference chinesePackDifference() {
+        LangPackDifference difference = new LangPackDifference();
+        difference.lang_code = "zh";
+        difference.from_version = 0;
+        difference.version = 1;
+        difference.strings = chineseStrings();
+        return difference;
+    }
+    public static ArrayList<LangPackString> chineseStrings() {
+        ArrayList<LangPackString> list = new ArrayList<>();
+        list.add(new LangPackString("LanguageName", "中文简体"));
+        list.add(new LangPackString("LanguageNameInEnglish", "Chinese"));
+        list.add(new LangPackString("local_string", "中文的云端字符串"));
+        list.add(new LangPackString("remote_string_only", "本地缺失，云端存在的字符串"));
+        return list;
+    }
+}
+```
