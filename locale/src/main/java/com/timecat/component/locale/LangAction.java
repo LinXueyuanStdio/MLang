@@ -14,24 +14,18 @@ import java.util.List;
  */
 public interface LangAction {
     /**
-     * 在 UI 线程运行
-     * 比如 在应用语言包后要调用，在 UI 线程进行刷新
-     * @param runnable 要运行的 runnable
-     */
-    void runOnUIThread(Runnable runnable);
-    /**
      * SharedPreferences preferences = Utilities.getGlobalMainSettings();
      * SharedPreferences.Editor editor = preferences.edit();
      * editor.putString("language", language);
      * editor.commit();
-     * @param language localeInfo.getKey()
+     * @param language localeInfo.getKey() 语言 id
      */
     void saveLanguageKeyInLocal(String language);
 
     /**
      * SharedPreferences preferences = Utilities.getGlobalMainSettings();
      * String lang = preferences.getString("language", null);
-     * @return @Nullable lang
+     * @return @Nullable lang  语言 id
      */
     String loadLanguageKeyInLocal();
 

@@ -208,12 +208,12 @@ public class MLang {
 
         loadOtherLanguages(context);
         if (remoteLanguages.isEmpty()) {
-            runOnUIThread(new Runnable() {
-                @Override
-                public void run() {
-                    loadRemoteLanguages(context);
-                }
-            });
+            loadRemoteLanguages(context);
+//            runOnUIThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                }
+//            });
         }
 
         for (int a = 0; a < otherLanguages.size(); a++) {
@@ -289,13 +289,13 @@ public class MLang {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        runOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                currentSystemLocale = getSystemLocaleStringIso639();
-            }
-        });
+        currentSystemLocale = getSystemLocaleStringIso639();
+//        runOnUIThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                currentSystemLocale = getSystemLocaleStringIso639();
+//            }
+//        });
     }
 
     /**
@@ -580,12 +580,13 @@ public class MLang {
         }
         if ((localeInfo.isRemote() || localeInfo.isUnofficial()) && (force || !pathToFile.exists() || hasBase && !pathToBaseFile.exists())) {
             if (init) {
-                runOnUIThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        applyRemoteLanguage(context, localeInfo, null, true, callback);
-                    }
-                });
+                applyRemoteLanguage(context, localeInfo, null, true, callback);
+//                runOnUIThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        applyRemoteLanguage(context, localeInfo, null, true, callback);
+//                    }
+//                });
             } else {
                 applyRemoteLanguage(context, localeInfo, null, true, callback);
             }
@@ -643,12 +644,13 @@ public class MLang {
             changingConfiguration = false;
             if (reloadLastFile) {
                 if (init) {
-                    runOnUIThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            reloadCurrentRemoteLocale(context, null, force, callback);
-                        }
-                    });
+                    reloadCurrentRemoteLocale(context, null, force, callback);
+//                    runOnUIThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            reloadCurrentRemoteLocale(context, null, force, callback);
+//                        }
+//                    });
                 } else {
                     reloadCurrentRemoteLocale(context, null, force, callback);
                 }
@@ -989,71 +991,72 @@ public class MLang {
             if (hasBase) {
                 valuesToSet.putAll(getLocaleFileStrings(localeInfo.getPathToFile(filesDir)));
             }
-            runOnUIThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (localeInfo != null) {
-                        if (type == 0) {
-                            localeInfo.version = difference.version;
-                        } else {
-                            localeInfo.baseVersion = difference.version;
+            if (localeInfo != null) {
+                if (type == 0) {
+                    localeInfo.version = difference.version;
+                } else {
+                    localeInfo.baseVersion = difference.version;
+                }
+            }
+            saveOtherLanguages(context);
+            try {
+                if (currentLocaleInfo == localeInfo) {
+                    Locale newLocale;
+                    String[] args;
+                    if (!TextUtils.isEmpty(localeInfo.pluralLangCode)) {
+                        args = localeInfo.pluralLangCode.split("_");
+                    } else if (!TextUtils.isEmpty(localeInfo.baseLangCode)) {
+                        args = localeInfo.baseLangCode.split("_");
+                    } else {
+                        args = localeInfo.shortName.split("_");
+                    }
+                    if (args.length == 1) {
+                        newLocale = new Locale(args[0]);
+                    } else {
+                        newLocale = new Locale(args[0], args[1]);
+                    }
+                    if (newLocale != null) {
+                        languageOverride = localeInfo.shortName;
+
+                        if (action != null) {
+                            action.saveLanguageKeyInLocal(localeInfo.getKey());
                         }
                     }
-                    saveOtherLanguages(context);
-                    try {
-                        if (currentLocaleInfo == localeInfo) {
-                            Locale newLocale;
-                            String[] args;
-                            if (!TextUtils.isEmpty(localeInfo.pluralLangCode)) {
-                                args = localeInfo.pluralLangCode.split("_");
-                            } else if (!TextUtils.isEmpty(localeInfo.baseLangCode)) {
-                                args = localeInfo.baseLangCode.split("_");
-                            } else {
-                                args = localeInfo.shortName.split("_");
-                            }
-                            if (args.length == 1) {
-                                newLocale = new Locale(args[0]);
-                            } else {
-                                newLocale = new Locale(args[0], args[1]);
-                            }
-                            if (newLocale != null) {
-                                languageOverride = localeInfo.shortName;
-
-                                if (action != null) {
-                                    action.saveLanguageKeyInLocal(localeInfo.getKey());
-                                }
-                            }
-                            if (newLocale != null) {
-                                localeValues = valuesToSet;
-                                currentLocale = newLocale;
-                                currentLocaleInfo = localeInfo;
-                                if (currentLocaleInfo != null && !TextUtils.isEmpty(currentLocaleInfo.pluralLangCode)) {
-                                    currentPluralRules = allRules.get(currentLocaleInfo.pluralLangCode);
-                                }
-                                if (currentPluralRules == null) {
-                                    currentPluralRules = allRules.get(currentLocale.getLanguage());
-                                    if (currentPluralRules == null) {
-                                        currentPluralRules = allRules.get("en");
-                                    }
-                                }
-                                changingConfiguration = true;
-                                Locale.setDefault(currentLocale);
-                                Configuration config = new Configuration();
-                                config.locale = currentLocale;
-                                context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
-                                changingConfiguration = false;
+                    if (newLocale != null) {
+                        localeValues = valuesToSet;
+                        currentLocale = newLocale;
+                        currentLocaleInfo = localeInfo;
+                        if (currentLocaleInfo != null && !TextUtils.isEmpty(currentLocaleInfo.pluralLangCode)) {
+                            currentPluralRules = allRules.get(currentLocaleInfo.pluralLangCode);
+                        }
+                        if (currentPluralRules == null) {
+                            currentPluralRules = allRules.get(currentLocale.getLanguage());
+                            if (currentPluralRules == null) {
+                                currentPluralRules = allRules.get("en");
                             }
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        changingConfiguration = true;
+                        Locale.setDefault(currentLocale);
+                        Configuration config = new Configuration();
+                        config.locale = currentLocale;
+                        context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
                         changingConfiguration = false;
                     }
-                    recreateFormatters(context);
-                    if (callback != null) {
-                        callback.finishLoad();
-                    }
                 }
-            });
+            } catch (Exception e) {
+                e.printStackTrace();
+                changingConfiguration = false;
+            }
+            recreateFormatters(context);
+            if (callback != null) {
+                callback.finishLoad();
+            }
+//            runOnUIThread(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                }
+//            });
         } catch (Exception ignore) {
 
         }
@@ -2778,10 +2781,10 @@ public class MLang {
         }
     }
 
-    public void runOnUIThread(Runnable runnable) {
-        if (action != null) {
-            action.runOnUIThread(runnable);
-        }
-    }
+//    public void runOnUIThread(Runnable runnable) {
+//        if (action != null) {
+//            action.runOnUIThread(runnable);
+//        }
+//    }
     //endregion
 }

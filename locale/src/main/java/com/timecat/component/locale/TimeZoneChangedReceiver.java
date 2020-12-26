@@ -19,13 +19,16 @@ public class TimeZoneChangedReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-        mLang.runOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                if (!mLang.formatterDayMonth.getTimeZone().equals(TimeZone.getDefault())) {
-                    mLang.recreateFormatters(context);
-                }
-            }
-        });
+        if (!TimeZone.getDefault().equals(mLang.formatterDayMonth.getTimeZone())) {
+            mLang.recreateFormatters(context);
+        }
+//        mLang.runOnUIThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (!TimeZone.getDefault().equals(mLang.formatterDayMonth.getTimeZone())) {
+//                    mLang.recreateFormatters(context);
+//                }
+//            }
+//        });
     }
 }

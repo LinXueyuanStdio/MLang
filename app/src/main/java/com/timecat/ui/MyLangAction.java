@@ -19,7 +19,6 @@ import androidx.annotation.Nullable;
  */
 public class MyLangAction implements LangAction {
 
-    @Override
     public void runOnUIThread(Runnable runnable) {
         MyApplication.applicationHandler.post(runnable);
     }
