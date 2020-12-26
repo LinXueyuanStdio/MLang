@@ -29,13 +29,10 @@ public class LangPackLanguage {
      */
     public String native_name = "";
     /**
-     * 语言名字
+     * 语言名字，给 android 看
      * zh en fr ja
      */
     public String lang_code = "";
     public String base_lang_code = "";
     public String plural_code = "";
-    public int strings_count = 0;
-    public int translated_count = 0;
-    public String translations_url = "";
 }

@@ -21,7 +21,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 //    implementation project(':locale')
-    implementation 'com.timecat.component:MLang:2.0.0'
+    implementation 'com.timecat.component:MLang:2.0.1'
 }

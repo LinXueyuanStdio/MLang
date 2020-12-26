@@ -23,7 +23,6 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.2.0'
 }
 
 //////// 打包发布配置开始 ////////
@@ -32,7 +31,7 @@ ext {
     DIST_PATH = ".."
     PUBLISH_GROUP_ID = 'com.timecat.component'
     PUBLISH_ARTIFACT_ID = 'MLang'
-    PUBLISH_VERSION = "2.0.0"
+    PUBLISH_VERSION = "2.0.1"
 }
 uploadArchives {
     repositories.mavenDeployer {

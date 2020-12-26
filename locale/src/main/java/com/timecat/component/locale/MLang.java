@@ -33,8 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
-
 /**
  * @author 林学渊
  * @email linxy59@mail2.sysu.edu.cn
@@ -137,17 +135,13 @@ public class MLang {
 
     /**
      * MLang 在内部不会持有 context
-     * 这里需要 context 是要根据 context 找资源做初始化
-     * @param context 上下文
-     * @param filesDir 存储文件夹路径
-     * @param action 动作
+     * 这里需要 context 是要根据 context 找资源做初始化，如 context.getResource()
+     * @param context @NonNull 上下文
+     * @param filesDir @NonNull 存储文件夹路径
+     * @param action @NonNull 动作
      * @return MLang
      */
-    public static MLang getInstance(
-            @NonNull final Context context,
-            @NonNull final File filesDir,
-            @NonNull final LangAction action
-    ) {
+    public static MLang getInstance(final Context context, final File filesDir, final LangAction action) {
         MLang localInstance = Instance;
         if (localInstance == null) {
             synchronized (MLang.class) {
@@ -162,16 +156,12 @@ public class MLang {
 
     /**
      * MLang 在内部不会持有 context
-     * 这里需要 context 是要根据 context 找资源做初始化
-     * @param context 上下文
-     * @param filesDir 存储文件夹路径
-     * @param action 动作
+     * 这里需要 context 是要根据 context 找资源做初始化，如 context.getResource()
+     * @param context @NonNull 上下文
+     * @param filesDir @NonNull 存储文件夹路径
+     * @param action @NonNull 动作
      */
-    public MLang(
-            @NonNull final Context context,
-            @NonNull final File filesDir,
-            @NonNull final LangAction action
-    ) {
+    public MLang(final Context context, final File filesDir, final LangAction action) {
         this.filesDir = filesDir;
         this.action = action;
         addRules(new String[]{"bem", "brx", "da", "de", "el", "en", "eo", "es", "et", "fi", "fo", "gl", "he", "iw", "it", "nb",
@@ -303,7 +293,7 @@ public class MLang {
         runOnUIThread(new Runnable() {
             @Override
             public void run() {
-                currentSystemLocale = getSystemLocaleStringIso639(context);
+                currentSystemLocale = getSystemLocaleStringIso639();
             }
         });
     }
@@ -311,9 +301,8 @@ public class MLang {
     /**
      * 获取当前本地化模式的名称
      * @param locale 本地化
-     * @return 名称
+     * @return @NonNull 名称
      */
-    @NonNull
     public static String getLocaleString(Locale locale) {
         if (locale == null) {
             return "en";
@@ -337,17 +326,20 @@ public class MLang {
         return result.toString();
     }
 
-    @NonNull
-    public String getSystemLocaleStringIso639(Context context) {
+    /**
+     * @return @NonNull
+     */
+    public String getSystemLocaleStringIso639() {
         Locale locale = getSystemDefaultLocale();
         if (locale == null) {
             return "en";
         }
         return getLocaleString(locale);
     }
-
-    @NonNull
-    public String getLocaleStringIso639(Context context) {
+    /**
+     * @return @NonNull
+     */
+    public String getLocaleStringIso639() {
         LocaleInfo info = currentLocaleInfo;
         if (info != null) {
             return info.getLangCode();
@@ -359,7 +351,9 @@ public class MLang {
         return getLocaleString(locale);
     }
 
-    @NonNull
+    /**
+     * @return @NonNull
+     */
     public static String getLocaleAlias(String code) {
         if (code == null) {
             return null;
@@ -517,6 +511,7 @@ public class MLang {
     public void applyLanguage(Context context, LocaleInfo localeInfo) {
         applyLanguage(context, localeInfo, true);
     }
+
     /**
      * 应用语言
      * @param context 上下文
@@ -701,7 +696,7 @@ public class MLang {
                 }
             }
         }
-        String newSystemLocale = getSystemLocaleStringIso639(context);
+        String newSystemLocale = getSystemLocaleStringIso639();
         if (currentSystemLocale != null && !newSystemLocale.equals(currentSystemLocale)) {
             currentSystemLocale = newSystemLocale;
             //            ConnectionsManager.setSystemLangCode(currentSystemLocale);

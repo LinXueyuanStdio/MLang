@@ -4,25 +4,24 @@ import android.text.TextUtils;
 
 import java.io.File;
 
-import androidx.annotation.Nullable;
-
 /**
  * 需要控制语言版本所需的所有配置项都在这里了
  */
 public class LocaleInfo {
 
     /**
-     * 语言名字，用该语言写的
+     * 语言名字，用该语言写的，给人看
      * 比如汉语写的"中文"，英语写的"English"
      */
     public String name;
     /**
-     * 用英语写的名字
+     * 用英语写的名字，给机器看
      * 比如中文"Chinese"，英语"English"
      */
     public String nameEnglish;
     /**
-     * 语言名字的缩写
+     * 语言名字的缩写，给 android 看
+     * 在没有找到字符串时，兜底情况需要根据这个缩写在 res 里找
      * 如中文的"zh"，英语的"en"
      */
     public String shortName;
@@ -32,7 +31,6 @@ public class LocaleInfo {
      * 非官方语言包为 "unofficial"
      * 内置语言包为 null
      */
-    @Nullable
     public String pathToFile;
     /**
      * 版本名

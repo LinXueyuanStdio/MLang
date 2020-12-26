@@ -3,9 +3,11 @@
 
     <string name="LanguageName">English</string>
     <string name="LanguageNameInEnglish">English</string>
+
     <string name="PaymentShippingName">Full Name</string>
     <string name="Yesterday">yesterday</string>
     <string name="YesterdayAt">yesterday at</string>
+
     <string name="TodayAtFormatted">at %1$s</string>
     <string name="TodayAtFormattedWithToday">today at %1$s</string>
     <string name="YesterdayAtFormatted">yesterday at %1$s</string>

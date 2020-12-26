@@ -6,8 +6,6 @@ import android.content.Intent;
 
 import java.util.TimeZone;
 
-import androidx.annotation.NonNull;
-
 /**
  * 接收时区改变
  * 广播接收器
@@ -15,7 +13,7 @@ import androidx.annotation.NonNull;
 public class TimeZoneChangedReceiver extends BroadcastReceiver {
     private MLang mLang;
 
-    public TimeZoneChangedReceiver(@NonNull MLang mLang) {
+    public TimeZoneChangedReceiver(MLang mLang) {
         this.mLang = mLang;
     }
 

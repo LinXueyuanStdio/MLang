@@ -13,8 +13,6 @@ import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import androidx.annotation.RequiresApi;
-
 /**
  * @author 林学渊
  * @email linxy59@mail2.sysu.edu.cn
@@ -53,7 +51,6 @@ public class Util {
         return true;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static boolean copyFile(File sourceFile, File destFile) throws IOException {
         if (sourceFile.equals(destFile)) {
             return true;
@@ -61,11 +58,13 @@ public class Util {
         if (!destFile.exists()) {
             destFile.createNewFile();
         }
-        try (FileInputStream source = new FileInputStream(sourceFile); FileOutputStream destination = new FileOutputStream(destFile)) {
-            destination.getChannel().transferFrom(source.getChannel(), 0, source.getChannel().size());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        if (Build.VERSION.SDK_INT >= 19) {
+            try (FileInputStream source = new FileInputStream(sourceFile); FileOutputStream destination = new FileOutputStream(destFile)) {
+                destination.getChannel().transferFrom(source.getChannel(), 0, source.getChannel().size());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
         }
         return true;
     }
