@@ -11,6 +11,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenCentral()
         maven { url "file://${localMavenDir.absolutePath}" }
         maven { url "https://github.com/LinXueyuanStdio/MLang/raw/main/dist/" }
     }

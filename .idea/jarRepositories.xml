@@ -61,5 +61,20 @@
       <option name="name" value="maven" />
       <option name="url" value="file:$PROJECT_DIR$/app/dist" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="file:$PROJECT_DIR$/../mempool/TimeCatMaven/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="file:$PROJECT_DIR$/mempool/TimeCatMaven" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="file:$PROJECT_DIR$/locale/dist/" />
+    </remote-repository>
   </component>
 </project>
