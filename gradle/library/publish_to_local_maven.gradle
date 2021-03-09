@@ -12,7 +12,7 @@ if (rootConfig.exists()) {
 }
 
 ext {
-    DIST_PATH = rootProps.localMavenPath
+    DIST_PATH = new File(rootDir, rootProps.localMavenPath)
     PUBLISH_GROUP_ID = moduleConfigProps.PUBLISH_GROUP_ID
     PUBLISH_ARTIFACT_ID = moduleConfigProps.PUBLISH_ARTIFACT_ID
     PUBLISH_VERSION = moduleConfigProps.PUBLISH_VERSION
@@ -28,4 +28,9 @@ uploadArchives {
             version project.PUBLISH_VERSION
         }
     }
+}
+
+task autoUploadArchives(dependsOn: ["${project.path}:assembleRelease"]) {
+    group = "upload"
+    finalizedBy tasks.getByName("uploadArchives")
 }

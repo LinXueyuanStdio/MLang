@@ -1,0 +1,14 @@
+ext {
+    composing_dependencies = [
+            MLang = [
+                    // 是否本地依赖
+                    isLocal     : false,
+                    // 项目的路径
+                    projectPath : "../MLang",
+                    // 项目名称
+                    projectName : ":locale",
+                    // 项目的maven地址
+                    projectMaven: "com.timecat.component:MLang"
+            ]
+    ]
+}
