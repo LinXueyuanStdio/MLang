@@ -32,7 +32,7 @@ MyLang.getString("local_string", R.string.local_string)
 // 但本地没有 R.string.remote_string_only，用 R.string.fallback_string 代替
 MyLang.getString("remote_string_only", R.string.fallback_string)
 ```
-使用语言包
+使用语言包（语言包文件是 xml 格式，和 res 下的 strings.xml 一样。）
 ```java
 //应用一种语言（这里自动处理了语言包的升级、语言包内部字符串的升级）
 MyLang.getInstance().applyLanguage(Context, LocaleInfo, force=true, init=false);
